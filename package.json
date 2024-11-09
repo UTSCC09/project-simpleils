@@ -1,0 +1,31 @@
+{
+  "name": "simpleils",
+  "version": "0.0.0",
+  "description": "A simple web-based integrated library system",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UTSCC09/project-simpleils.git"
+  },
+  "author": "Eric Wan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UTSCC09/project-simpleils/issues"
+  },
+  "homepage": "https://github.com/UTSCC09/project-simpleils#readme",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^9.14.0",
+    "@stylistic/eslint-plugin": "^2.10.1",
+    "@types/eslint__js": "^8.42.3",
+    "eslint": "^9.14.0",
+    "globals": "^15.12.0",
+    "typescript-eslint": "^8.13.0"
+  }
+}

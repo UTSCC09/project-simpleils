@@ -1,0 +1,6 @@
+{
+  "name": "simpleils-server",
+  "description": "Backend for SimpleILS",
+  "main": "src/app.js",
+  "scripts": {}
+}
