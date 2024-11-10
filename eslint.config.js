@@ -5,6 +5,9 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
+    ignores: ["client/dist"]
+  },
+  {
     languageOptions: {
       globals: { ...globals.browser }
     }
@@ -123,20 +126,7 @@ export default tseslint.config(
       "@stylistic/keyword-spacing": "error",
       "@stylistic/max-len": ["error", 80, 4, { ignoreUrls: true, ignoreStrings: true }],
       "@stylistic/max-statements-per-line": "error",
-      "@stylistic/member-delimiter-style": [
-        "error",
-        {
-          multiline: {
-            delimiter: "semi",
-            requireLast: true
-          },
-          singleline: {
-            delimiter: "semi",
-            requireLast: true
-          },
-          multilineDetection: "brackets"
-        }
-      ],
+      "@stylistic/member-delimiter-style": "error",
       "@stylistic/new-parens": "error",
       "@stylistic/no-extra-semi": "error",
       "@stylistic/no-floating-decimal": "error",
