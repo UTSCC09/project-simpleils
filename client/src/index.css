@@ -1,15 +1,12 @@
+:root {
+  --main-color: #317138;
+  --main-color-light: #a2cea8;
+  --main-color-dark: #225228;
+  --accent-color: #d84097;
+}
+
 body {
   font-family: Quicksand;
   font-size: 18px;
   margin: 0;
-}
-
-#root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-
-  > main {
-    flex: 1;
-  }
 }

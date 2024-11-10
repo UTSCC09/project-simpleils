@@ -8,16 +8,15 @@ import App from "./App.tsx";
 import CreditsPage from "./CreditsPage.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import HomePage from "./HomePage.tsx";
-import Layout from "./Layout.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: (
-      <Layout>
+      <App>
         <ErrorPage />
-      </Layout>
+      </App>
     ),
     children: [
       { index: true, element: <HomePage /> },
