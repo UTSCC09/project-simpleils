@@ -1,3 +1,4 @@
+import themeBtnClasses from "./ThemeButton.module.css";
 import "./App.css";
 
 import type { ReactNode } from "react";
@@ -5,8 +6,25 @@ import type { ReactNode } from "react";
 import { createTheme, useColorScheme, ThemeProvider } from "@mui/material/styles";
 import { Link, Outlet } from "react-router-dom";
 
+import config from "../../app-config.json";
+
 const theme = createTheme({
-  colorSchemes: { light: true, dark: true },
+  colorSchemes: {
+    light: {
+      palette: {
+        primary: { main: "#317138" },
+        secondary: { main: "#d84097" },
+        contrastThreshold: 4.5
+      }
+    },
+    dark: {
+      palette: {
+        primary: { main: "#317138" },
+        secondary: { main: "#d84097" },
+        contrastThreshold: 4.5
+      }
+    }
+  },
   cssVariables: {
     cssVarPrefix: "",
     colorSchemeSelector: "class"
@@ -15,16 +33,24 @@ const theme = createTheme({
 
 function ThemeButton() {
   const { mode, setMode } = useColorScheme();
-  return <button onClick={() => { setMode(mode == "light" ? "dark": "light"); }}>Color</button>
+  const newMode = mode === "light" ? "dark" : "light";
+  return (
+    <button
+      className={`material-symbols-outlined ${themeBtnClasses["theme-button"]} ${themeBtnClasses[newMode]}`}
+      onClick={() => { setMode(newMode); }}
+    >
+      {`${newMode}_mode`}
+    </button>
+  );
 }
 
 export default function App({ children }: { children?: ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <header className="page-head">
-        <Link to="/">SimpleILS</Link>
+        <Link to="/" className="site-title">{config.name}</Link>
+        <div className="spacer"></div>
         <ThemeButton />
-        <nav />
       </header>
       <main>
         { children ?? <Outlet />}

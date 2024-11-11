@@ -1,0 +1,7 @@
+.theme-button {
+  background: none;
+  color: var(--icon-color);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}

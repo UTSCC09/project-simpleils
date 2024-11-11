@@ -8,13 +8,41 @@
   }
 }
 
+.page-head {
+  background-color: var(--palette-background-default);
+  border-bottom: 0.25rem solid var(--palette-primary-main);
+  padding: 1rem;
+  display: flex;
+  position: sticky;
+  top: 0;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.site-title {
+  color: var(--palette-text-primary);
+  font-weight: bold;
+  font-size: 1.25em;
+  text-decoration: none;
+}
+
 main {
   min-width: 20rem;
   max-width: 60vw;
   width: 100%;
+  padding: 1rem 0;
   margin: auto;
 }
 
 .page-foot {
+  background-color: var(--palette-primary-main);
   text-align: center;
+  padding: 1rem;
+
+  a {
+    color: var(--palette-primary-contrastText);
+    text-decoration: none;
+  }
 }

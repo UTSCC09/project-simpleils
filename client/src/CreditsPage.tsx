@@ -7,7 +7,7 @@ export default function CreditsPage() {
       <h1>Credits</h1>
       <ul>
         <li>
-          <a href="https://fonts.google.com">Google Fonts</a> for the Quicksand font
+          <a href="https://fonts.google.com">Google Fonts</a> for the Quicksand font and Material Symbols
         </li>
         <li>
           StackOverflow for code snippets:

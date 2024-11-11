@@ -1,12 +1,24 @@
-:root {
-  --main-color: #317138;
-  --main-color-light: #a2cea8;
-  --main-color-dark: #225228;
-  --accent-color: #d84097;
+:root.light {
+  --icon-color: rgba(0, 0, 0, 0.54);
+  --icon-color-inactive: rgba(0, 0, 0, 0.26);
+}
+
+:root.dark {
+  --icon-color: rgba(255, 255, 255, 1);
+  --icon-color-inactive: rgba(255, 255, 255, 0.3);
+}
+
+html {
+  overscroll-behavior-y: none;
 }
 
 body {
-  font-family: Quicksand;
+  font-family: Quicksand, sans-serif;
   font-size: 18px;
+  line-height: 1.5;
   margin: 0;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 48;
 }
