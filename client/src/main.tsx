@@ -8,6 +8,7 @@ import App from "./App.tsx";
 import CreditsPage from "./CreditsPage.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import HomePage from "./HomePage.tsx";
+import TestPage from "./TestPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,8 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <HomePage /> },
-      { path: "credits", element: <CreditsPage /> }
+      { path: "credits", element: <CreditsPage /> },
+      { path: "test", element: <TestPage /> },
     ]
   }
 ]);

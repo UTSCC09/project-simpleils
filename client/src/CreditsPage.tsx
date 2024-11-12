@@ -3,7 +3,7 @@ import { setTitle } from "./helpers";
 export default function CreditsPage() {
   setTitle("Credits");
   return (
-    <>
+    <article>
       <h1>Credits</h1>
       <ul>
         <li>
@@ -18,6 +18,6 @@ export default function CreditsPage() {
           </ul>
         </li>
       </ul>
-    </>
+    </article>
   );
 }

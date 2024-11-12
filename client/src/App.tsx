@@ -4,7 +4,7 @@ import "./App.css";
 import type { ReactNode } from "react";
 
 import { createTheme, useColorScheme, ThemeProvider } from "@mui/material/styles";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, ScrollRestoration } from "react-router-dom";
 
 import config from "../../app-config.json";
 
@@ -36,7 +36,7 @@ function ThemeButton() {
   const newMode = mode === "light" ? "dark" : "light";
   return (
     <button
-      className={`material-symbols-outlined ${themeBtnClasses["theme-button"]} ${themeBtnClasses[newMode]}`}
+      className={`material-symbols-outlined ${themeBtnClasses["theme-button"]}`}
       onClick={() => { setMode(newMode); }}
     >
       {`${newMode}_mode`}
@@ -49,15 +49,19 @@ export default function App({ children }: { children?: ReactNode }) {
     <ThemeProvider theme={theme}>
       <header className="page-head">
         <Link to="/" className="site-title">{config.name}</Link>
-        <div className="spacer"></div>
+        <div className="spacer" />
         <ThemeButton />
       </header>
       <main>
         { children ?? <Outlet />}
       </main>
       <footer className="page-foot">
-        <Link to="/credits">Credits</Link>
+        <nav>
+          <Link to="/credits">Credits</Link>
+          <Link to="/test">Test</Link>
+        </nav>
       </footer>
+      <ScrollRestoration />
     </ThemeProvider>
   );
 }

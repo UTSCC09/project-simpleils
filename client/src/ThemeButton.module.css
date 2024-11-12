@@ -3,5 +3,8 @@
   color: var(--icon-color);
   border: none;
   padding: 0;
+  width: 2rem;
+  height: 2rem;
   cursor: pointer;
+  user-select: none;
 }
