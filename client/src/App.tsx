@@ -1,12 +1,20 @@
-import themeBtnClasses from "./ThemeButton.module.css";
 import "./App.css";
 
-import type { ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 
 import { createTheme, useColorScheme, ThemeProvider } from "@mui/material/styles";
+import { useState } from "react";
 import { Link, Outlet, ScrollRestoration } from "react-router-dom";
 
+import { IconButton } from "./icons.tsx";
+
 import config from "../../app-config.json";
+
+interface MenuButtonProps {
+  className: string;
+  onClick: MouseEventHandler;
+  menuOpen: boolean;
+}
 
 const theme = createTheme({
   colorSchemes: {
@@ -35,24 +43,42 @@ function ThemeButton({ className }: { className: string }) {
   const { mode, setMode } = useColorScheme();
   const newMode = mode === "light" ? "dark" : "light";
   return (
-    <button
-      className={`material-symbols-outlined ${themeBtnClasses["theme-button"]} ${className}`}
+    <IconButton
+      name={`${newMode}-mode`}
+      className={className}
       onClick={() => { setMode(newMode); }}
-    >
-      {`${newMode}_mode`}
-    </button>
+    />
+  );
+}
+
+function MenuButton({ className, onClick, menuOpen }: MenuButtonProps) {
+  return (
+    <IconButton
+      name={menuOpen ? "close" : "menu"}
+      className={className}
+      onClick={onClick}
+    />
   );
 }
 
 export default function App({ children }: { children?: ReactNode }) {
+  const [menuOpen, setMenuState] = useState(false);
   return (
     <ThemeProvider theme={theme}>
-      <header className="page-head">
+      <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
         <Link to="/" className="site-title">{config.name}</Link>
         <nav>
           <Link to="/test">Test</Link>
+          <Link to="/test">Test</Link>
+          <Link to="/test">Test</Link>
+          <Link to="/test">Test</Link>
         </nav>
-        <ThemeButton className="theme-button" />
+        <ThemeButton className="header-theme-button" />
+        <MenuButton
+          className="header-menu-button"
+          onClick={() => { setMenuState(!menuOpen); }}
+          menuOpen={menuOpen}
+        />
       </header>
       <main>
         { children ?? <Outlet />}

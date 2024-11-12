@@ -7,5 +7,10 @@ export default defineConfig({
   plugins: [pluginChecker({ typescript: { buildMode: true } }), react()],
   server: {
     host: true
+  },
+  css: {
+    modules: {
+      localsConvention: "camelCase"
+    }
   }
 });
