@@ -61,25 +61,31 @@ function MenuButton({ className, onClick, menuOpen }: MenuButtonProps) {
   );
 }
 
-export default function App({ children }: { children?: ReactNode }) {
+function PageHeader() {
   const [menuOpen, setMenuState] = useState(false);
   return (
+    <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
+      <Link to="/" className="site-title">{config.name}</Link>
+      <nav>
+        <Link to="/test">Test</Link>
+        <Link to="/test">Test</Link>
+        <Link to="/test">Test</Link>
+        <Link to="/test">Test</Link>
+      </nav>
+      <ThemeButton className="header-theme-button" />
+      <MenuButton
+        className="header-menu-button"
+        onClick={() => { setMenuState(!menuOpen); }}
+        menuOpen={menuOpen}
+      />
+    </header>
+  );
+}
+
+export default function App({ children }: { children?: ReactNode }) {
+  return (
     <ThemeProvider theme={theme}>
-      <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
-        <Link to="/" className="site-title">{config.name}</Link>
-        <nav>
-          <Link to="/test">Test</Link>
-          <Link to="/test">Test</Link>
-          <Link to="/test">Test</Link>
-          <Link to="/test">Test</Link>
-        </nav>
-        <ThemeButton className="header-theme-button" />
-        <MenuButton
-          className="header-menu-button"
-          onClick={() => { setMenuState(!menuOpen); }}
-          menuOpen={menuOpen}
-        />
-      </header>
+      <PageHeader />
       <main>
         { children ?? <Outlet />}
       </main>
