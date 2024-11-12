@@ -1,4 +1,4 @@
-import classes from "./HomePage.module.css"
+import classes from "./HomePage.module.css";
 
 import { setTitle } from "./helpers";
 

@@ -31,12 +31,12 @@ const theme = createTheme({
   }
 });
 
-function ThemeButton() {
+function ThemeButton({ className }: { className: string }) {
   const { mode, setMode } = useColorScheme();
   const newMode = mode === "light" ? "dark" : "light";
   return (
     <button
-      className={`material-symbols-outlined ${themeBtnClasses["theme-button"]}`}
+      className={`material-symbols-outlined ${themeBtnClasses["theme-button"]} ${className}`}
       onClick={() => { setMode(newMode); }}
     >
       {`${newMode}_mode`}
@@ -49,8 +49,10 @@ export default function App({ children }: { children?: ReactNode }) {
     <ThemeProvider theme={theme}>
       <header className="page-head">
         <Link to="/" className="site-title">{config.name}</Link>
-        <div className="spacer" />
-        <ThemeButton />
+        <nav>
+          <Link to="/test">Test</Link>
+        </nav>
+        <ThemeButton className="theme-button" />
       </header>
       <main>
         { children ?? <Outlet />}

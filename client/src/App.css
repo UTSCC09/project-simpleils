@@ -7,23 +7,46 @@
 .page-head {
   background-color: var(--palette-background-default);
   border-bottom: 0.25rem solid var(--palette-primary-main);
-  padding: 1rem;
+  text-decoration: none;
+  max-width: 75rem;
+  width: 100%;
+  margin: auto;
   display: flex;
   align-items: center;
   position: sticky;
   top: 0;
-}
 
-.spacer {
-  flex: 1;
+  > nav {
+    flex: 1;
+    display: flex;
+
+    > a {
+      color: var(--palette-text-primary);
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      transition: background-color 0.25s;
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: var(--palette-primary-main);
+          color: var(--palette-primary-contrastText);
+        }
+      }
+    }
+  }
+
+  > .theme-button {
+    margin: 0 1rem;
+  }
 }
 
 .site-title {
   color: var(--palette-text-primary);
   font-weight: bold;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   text-decoration: none;
   user-select: none;
+  padding: 0.75rem 1rem;
 }
 
 main {
@@ -44,7 +67,7 @@ main {
   > nav {
     display: flex;
     justify-content: center;
-    gap: 2rem;
+    gap: 5rem;
   }
 
   a {

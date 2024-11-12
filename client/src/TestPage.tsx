@@ -2,6 +2,8 @@ import { setTitle } from "./helpers";
 
 export default function TestPage() {
   setTitle("Test");
+
+  /* eslint-disable @stylistic/max-len */
   return (
     <article>
       <h1>Test</h1>
@@ -16,4 +18,5 @@ export default function TestPage() {
       </p>
     </article>
   );
+  /* eslint-enable @stylistic/max-len */
 }

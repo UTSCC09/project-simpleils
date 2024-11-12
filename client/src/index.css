@@ -13,8 +13,10 @@ html {
 }
 
 body {
+  background-color: var(--palette-background-default);
   font-family: Quicksand, sans-serif;
   font-size: 18px;
+  color: var(--palette-text-primary);
   line-height: 1.5;
   margin: 0;
 }
