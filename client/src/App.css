@@ -8,7 +8,7 @@
   background-color: var(--palette-background-default);
   border-bottom: 0.25rem solid var(--palette-primary-main);
   text-decoration: none;
-  max-width: 75rem;
+  max-width: 70rem;
   width: 100%;
   margin: auto;
   display: flex;
@@ -50,10 +50,6 @@
   margin-right: auto;
 }
 
-.menu-open > nav {
-  display: flex;
-}
-
 .header-theme-button {
   margin-left: 1rem;
 }
@@ -62,9 +58,22 @@
   margin: 0 1rem;
 }
 
+.header-login {
+  width: 100%;
+  margin: 0.5rem 0;
+  display: none;
+  justify-content: center;
+}
+
+.menu-open {
+  > nav, > .login {
+    display: flex;
+  }
+}
+
 main {
   min-width: 300px;
-  max-width: 60vw;
+  max-width: min(60vw, 50rem);
   width: 100%;
   padding: 1rem 0;
   margin: auto;
@@ -110,6 +119,12 @@ main {
 
   .header-menu-button {
     display: none;
+  }
+
+  .header-login {
+    width: auto;
+    margin-right: 1rem;
+    display: block;
   }
 
   .page-foot > nav {

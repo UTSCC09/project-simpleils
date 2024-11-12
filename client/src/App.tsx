@@ -4,6 +4,7 @@ import type { MouseEventHandler, ReactNode } from "react";
 
 import { createTheme, useColorScheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
+import { Button } from "@mui/material";
 import { Link, Outlet, ScrollRestoration } from "react-router-dom";
 
 import { IconButton } from "./icons.tsx";
@@ -62,6 +63,7 @@ function MenuButton({ className, onClick, menuOpen }: MenuButtonProps) {
 }
 
 function PageHeader() {
+  const loggedIn = false;
   const [menuOpen, setMenuState] = useState(false);
   return (
     <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
@@ -78,6 +80,13 @@ function PageHeader() {
         onClick={() => { setMenuState(!menuOpen); }}
         menuOpen={menuOpen}
       />
+      {
+        !loggedIn && (
+          <div className="header-login">
+            <Button variant="contained">Log in</Button>
+          </div>
+        )
+      }
     </header>
   );
 }
