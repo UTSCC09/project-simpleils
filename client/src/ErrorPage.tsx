@@ -1,8 +1,11 @@
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
+import { setTitle } from "./helpers";
+
 export default function CreditsPage() {
   const error = useRouteError();
   if (isRouteErrorResponse(error)) {
+    setTitle(`Error ${error.status}`);
     return (
       <article>
         <h1>Oops!</h1>
@@ -16,6 +19,7 @@ export default function CreditsPage() {
       </article>
     );
   }
+  setTitle("Oops!");
   return (
     <article>
       <h1>Oops!</h1>

@@ -15,6 +15,9 @@ export default function CreditsPage() {
             <li>
               <a href="https://stackoverflow.com/a/76385223">React Router - How can I reuse my layout for the errorElement in the root route?</a>
             </li>
+            <li>
+              <a href="https://stackoverflow.com/a/70918633">How to Close Navigation Menu on Route Change</a>
+            </li>
           </ul>
         </li>
       </ul>

@@ -32,3 +32,11 @@
 .icon-menu::before {
   content: "menu";
 }
+
+.icon-visibility::before {
+  content: "visibility";
+}
+
+.icon-visibility-off::before {
+  content: "visibility_off";
+}

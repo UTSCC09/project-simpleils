@@ -2,7 +2,8 @@ import classes from "./icons.module.css";
 
 import type { MouseEventHandler } from "react";
 
-type icon = "close" | "dark-mode" | "light-mode" | "menu";
+type icon = "close" | "dark-mode" | "light-mode" | "menu" | "visibility"
+  | "visibility-off";
 
 interface IconProps {
   name: icon;

@@ -3,9 +3,9 @@ import "./App.css";
 import type { MouseEventHandler, ReactNode } from "react";
 
 import { createTheme, useColorScheme, ThemeProvider } from "@mui/material/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
-import { Link, Outlet, ScrollRestoration } from "react-router-dom";
+import { useLocation, Link, Outlet, ScrollRestoration } from "react-router-dom";
 
 import { IconButton } from "./icons.tsx";
 
@@ -37,6 +37,13 @@ const theme = createTheme({
   cssVariables: {
     cssVarPrefix: "",
     colorSchemeSelector: "class"
+  },
+  typography: {
+    fontFamily: "Quicksand,sans-serif",
+    fontSize: 16,
+    button: {
+      textTransform: "none"
+    }
   }
 });
 
@@ -65,6 +72,10 @@ function MenuButton({ className, onClick, menuOpen }: MenuButtonProps) {
 function PageHeader() {
   const loggedIn = false;
   const [menuOpen, setMenuState] = useState(false);
+  const location = useLocation();
+  useEffect(() => {
+    setMenuState(false);
+  }, [location]);
   return (
     <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
       <Link to="/" className="site-title">{config.name}</Link>
@@ -83,7 +94,9 @@ function PageHeader() {
       {
         !loggedIn && (
           <div className="header-login">
-            <Button variant="contained">Log in</Button>
+            <Link to="/login">
+              <Button variant="contained">Log in</Button>
+            </Link>
           </div>
         )
       }
