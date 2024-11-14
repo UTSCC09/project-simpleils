@@ -7,18 +7,18 @@ import Password from "./Password.tsx";
 
 import { setTitle } from "./helpers";
 
-export default function LoginPage() {
-  setTitle("Log in");
+export default function SignupPage() {
+  setTitle("Sign up");
   return (
     <article className={classes.authContainer}>
       <Paper elevation={5} className={classes.auth}>
-        <h1>Log in</h1>
+        <h1>Sign up</h1>
         <form className={classes.authForm}>
           <TextField label="Username" />
           <Password />
-          <Button variant="contained">Log in</Button>
+          <Button variant="contained">Sign up</Button>
         </form>
-        Don't have an account? <Link href="/signup">Sign up</Link>
+        Already have an account? <Link href="/login">Log in</Link>
       </Paper>
     </article>
   );
