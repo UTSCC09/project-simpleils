@@ -1,0 +1,18 @@
+.auth-container {
+  min-width: 300px;
+  max-width: 25rem;
+  width: 100%;
+  margin: 2rem auto;
+}
+
+.auth {
+  padding: 2rem;
+  text-align: center;
+}
+
+.authForm {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
