@@ -2,6 +2,15 @@ name:
   simpleils
 
 services:
+  web:
+    container_name: web
+    image: simpleils-web:${TAG}
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
   db:
     container_name: db
     image: simpleils-db:${TAG}
