@@ -1,11 +1,13 @@
 import "./App.css";
 
+import type { LinkProps } from "@mui/material";
 import type { MouseEventHandler, ReactNode } from "react";
+import type { LinkProps as RouterLinkProps } from "react-router-dom";
 
-import { createTheme, useColorScheme, ThemeProvider } from "@mui/material/styles";
-import { useEffect, useState } from "react";
-import { Button } from "@mui/material";
-import { useLocation, Link, Outlet, ScrollRestoration } from "react-router-dom";
+import { createTheme, useColorScheme, StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
+import { forwardRef, useEffect, useState } from "react";
+import { Button, Link } from "@mui/material";
+import { useLocation, Link as RouterLink, Outlet, ScrollRestoration } from "react-router-dom";
 
 import { IconButton } from "./icons.tsx";
 
@@ -17,18 +19,26 @@ interface MenuButtonProps {
   menuOpen: boolean;
 }
 
+const LinkBehavior = forwardRef<
+  HTMLAnchorElement,
+    Omit<RouterLinkProps, "to"> & { href: RouterLinkProps["to"] }
+>(({ href, ...other }, ref) => {
+  // Map href (Material UI) -> to (react-router)
+  return <RouterLink ref={ref} to={href} {...other} />;
+});
+
 const theme = createTheme({
   colorSchemes: {
     light: {
       palette: {
-        primary: { main: "#317138" },
+        primary: { light: "#64af6e", main: "#317138" },
         secondary: { main: "#d84097" },
         contrastThreshold: 4.5
       }
     },
     dark: {
       palette: {
-        primary: { main: "#317138" },
+        primary: { light: "#64af6e", main: "#317138" },
         secondary: { main: "#d84097" },
         contrastThreshold: 4.5
       }
@@ -39,13 +49,32 @@ const theme = createTheme({
     colorSchemeSelector: "class"
   },
   typography: {
-    fontFamily: "Quicksand,sans-serif",
+    fontFamily: "Quicksand, sans-serif",
     fontSize: 16,
     button: {
       textTransform: "none"
     }
+  },
+  components: {
+    MuiLink: {
+      defaultProps: {
+        component: LinkBehavior
+      } as LinkProps
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        LinkComponent: LinkBehavior
+      }
+    }
   }
 });
+
+theme.components!.MuiLink!.styleOverrides = {
+  root: {
+    color: "var(--link-color)",
+    textDecorationColor: "var(--link-underline-color)"
+  }
+};
 
 function ThemeButton({ className }: { className: string }) {
   const { mode, setMode } = useColorScheme();
@@ -53,6 +82,7 @@ function ThemeButton({ className }: { className: string }) {
   return (
     <IconButton
       name={`${newMode}-mode`}
+      aria-label={`Switch to ${newMode} mode`}
       className={className}
       onClick={() => { setMode(newMode); }}
     />
@@ -63,6 +93,7 @@ function MenuButton({ className, onClick, menuOpen }: MenuButtonProps) {
   return (
     <IconButton
       name={menuOpen ? "close" : "menu"}
+      aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
       className={className}
       onClick={onClick}
     />
@@ -78,12 +109,12 @@ function PageHeader() {
   }, [location]);
   return (
     <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
-      <Link to="/" className="site-title">{config.name}</Link>
+      <Link href="/" className="site-title">{config.name}</Link>
       <nav>
-        <Link to="/test">Test</Link>
-        <Link to="/test">Test</Link>
-        <Link to="/test">Test</Link>
-        <Link to="/test">Test</Link>
+        <Link href="/test">Test</Link>
+        <Link href="/test">Test</Link>
+        <Link href="/test">Test</Link>
+        <Link href="/test">Test</Link>
       </nav>
       <ThemeButton className="header-theme-button" />
       <MenuButton
@@ -94,9 +125,7 @@ function PageHeader() {
       {
         !loggedIn && (
           <div className="header-login">
-            <Link to="/login">
-              <Button variant="contained">Log in</Button>
-            </Link>
+            <Button variant="contained" href="/login">Log in</Button>
           </div>
         )
       }
@@ -106,18 +135,20 @@ function PageHeader() {
 
 export default function App({ children }: { children?: ReactNode }) {
   return (
-    <ThemeProvider theme={theme}>
-      <PageHeader />
-      <main>
-        { children ?? <Outlet />}
-      </main>
-      <footer className="page-foot">
-        <nav>
-          <Link to="/credits">Credits</Link>
-          <Link to="/test">Test</Link>
-        </nav>
-      </footer>
-      <ScrollRestoration />
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <PageHeader />
+        <main>
+          { children ?? <Outlet />}
+        </main>
+        <footer className="page-foot">
+          <nav>
+            <Link href="/credits">Credits</Link>
+            <Link href="/test">Test</Link>
+          </nav>
+        </footer>
+        <ScrollRestoration />
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }

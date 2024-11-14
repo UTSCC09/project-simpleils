@@ -1,3 +1,5 @@
+import { Link } from "@mui/material";
+
 import { setTitle } from "./helpers";
 
 export default function CreditsPage() {
@@ -7,16 +9,16 @@ export default function CreditsPage() {
       <h1>Credits</h1>
       <ul>
         <li>
-          <a href="https://fonts.google.com">Google Fonts</a> for the Quicksand font and Material Symbols
+          <Link href="https://fonts.google.com">Google Fonts</Link> for the Quicksand font and Material Symbols
         </li>
         <li>
           StackOverflow for code snippets:
           <ul>
             <li>
-              <a href="https://stackoverflow.com/a/76385223">React Router - How can I reuse my layout for the errorElement in the root route?</a>
+              <Link href="https://stackoverflow.com/a/76385223">React Router - How can I reuse my layout for the errorElement in the root route?</Link>
             </li>
             <li>
-              <a href="https://stackoverflow.com/a/70918633">How to Close Navigation Menu on Route Change</a>
+              <Link href="https://stackoverflow.com/a/70918633">How to Close Navigation Menu on Route Change</Link>
             </li>
           </ul>
         </li>

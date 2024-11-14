@@ -1,11 +1,17 @@
-:root.light {
-  --icon-color: rgba(0, 0, 0, 0.54);
-  --icon-color-inactive: rgba(0, 0, 0, 0.26);
-}
+:root {
+  &.light {
+    --icon-color: rgba(0, 0, 0, 0.54);
+    --icon-color-inactive: rgba(0, 0, 0, 0.26);
+    --link-color: var(--palette-primary-main);
+    --link-underline-color: rgba(var(--palette-primary-mainChannel) / 0.4);
+  }
 
-:root.dark {
-  --icon-color: rgba(255, 255, 255, 1);
-  --icon-color-inactive: rgba(255, 255, 255, 0.3);
+  &.dark {
+    --icon-color: rgba(255, 255, 255, 1);
+    --icon-color-inactive: rgba(255, 255, 255, 0.3);
+    --link-color: var(--palette-primary-light);
+    --link-underline-color: rgba(var(--palette-primary-lightChannel) / 0.4);
+  }
 }
 
 html {

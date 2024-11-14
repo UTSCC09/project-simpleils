@@ -1,42 +1,41 @@
 import classes from "./icons.module.css";
 
-import type { MouseEventHandler } from "react";
+import type { ComponentProps } from "react";
 
-type icon = "close" | "dark-mode" | "light-mode" | "menu" | "visibility"
+export type icon = "close" | "dark-mode" | "light-mode" | "menu" | "visibility"
   | "visibility-off";
 
-interface IconProps {
+export interface IconProps {
   name: icon;
   inactive?: boolean;
   className?: string;
 }
 
-interface IconButtonProps {
+export interface IconButtonProps {
   name: icon;
-  disabled?: boolean;
   className?: string;
-  onClick?: MouseEventHandler;
 }
 
-export function Icon({ name, inactive = false, className = "" }: IconProps) {
+export function Icon({ name, inactive = false, className = "", ...rest }:
+  IconProps & ComponentProps<"span">) {
   const iconClasses = [
     "material-symbols-outlined",
     inactive ? classes.iconInactive : classes.icon,
     classes[`icon-${name}`]
   ];
   return (
-    <span className={`${iconClasses.join(" ")} ${className}`} />
+    <span className={`${iconClasses.join(" ")} ${className}`} {...rest} />
   );
 }
 
-export function IconButton(props: IconButtonProps) {
+export function IconButton({ name, className, ...rest }:
+  IconButtonProps & ComponentProps<"button">) {
   return (
     <button
-      className={`${classes.iconButton} ${props.className ?? ""}`}
-      disabled={props.disabled}
-      onClick={props.onClick}
+      className={`${classes.iconButton} ${className ?? ""}`}
+      {...rest}
     >
-      <Icon name={props.name} />
+      <Icon name={name} />
     </button>
   );
 }

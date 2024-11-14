@@ -2,6 +2,7 @@ import classes from "./LoginPage.module.css";
 
 import { useState } from "react";
 import { Button, InputAdornment, Paper, TextField } from "@mui/material";
+import { Link } from "@mui/material";
 
 import { IconButton } from "./icons.tsx";
 
@@ -25,6 +26,7 @@ export default function CreditsPage() {
                   <InputAdornment position="end">
                     <IconButton
                       name={`visibility${passwdShow ? "-off" : ""}`}
+                      aria-label={`${passwdShow ? "Hide" : "Show"} password`}
                       onClick={
                         e => {
                           e.preventDefault();
@@ -39,6 +41,7 @@ export default function CreditsPage() {
           />
           <Button variant="contained">Log in</Button>
         </form>
+        Don't have an account? <Link href="/test">Sign up</Link>
       </Paper>
     </article>
   );
