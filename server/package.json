@@ -1,6 +1,26 @@
 {
   "name": "simpleils-server",
   "description": "Backend for SimpleILS",
-  "main": "src/app.js",
-  "scripts": {}
+  "type": "module",
+  "main": "dist/app.js",
+  "scripts": {
+    "dev": "NODE_ENV=dev tsx watch src/app.ts",
+    "build": "tsc",
+    "start": "NODE_ENV=prod node dist/app.js"
+  },
+  "dependencies": {
+    "@types/express-session": "^1.18.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "pg-promise": "^11.10.2",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3"
+  }
 }
