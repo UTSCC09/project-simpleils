@@ -25,7 +25,6 @@ export default tseslint.config(
       "no-unused-vars": "warn",
       "no-use-before-define": ["error", { functions: false, variables: false }],
       "no-useless-assignment": "error",
-      "require-atomic-updates": "error",
       "camelcase": "error",
       "consistent-return": "error",
       "curly": ["error", "multi-or-nest", "consistent"],
