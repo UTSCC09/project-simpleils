@@ -1,3 +1,4 @@
+import argon2 from "argon2";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
@@ -33,11 +34,11 @@ app.use((req, res, next) => {
 });
 app.use(
   session({
-    secret: "placeholder",
+    secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      sameSite: "lax"
+      sameSite: "strict"
     }
   })
 );
@@ -54,34 +55,45 @@ if (process.env.NODE_ENV === "dev") {
 
 // Authentication routes
 app.post("/api/signup", async (req, res) => {
-  const { username, password } = req.body;
-  if (username === undefined || password === undefined) {
-    res.status(400).end();
-    return;
-  }
-
-  await db.none("INSERT INTO users VALUES (DEFAULT, 'user', $1, $1, $1, $2)",
-                [username, password]);
-});
-app.post("/api/login", async (req, res) => {
-  const { username, password } = req.body;
-  if (username === undefined || password === undefined) {
-    res.status(400).end();
+  const { first, last, email, password } = req.body;
+  if (first === undefined || last === undefined || email === undefined
+    || password === undefined) {
+    res.status(400).json({ error: "One or more required fields are missing." });
     return;
   }
 
   try {
-    await db.one("SELECT * FROM users WHERE first_name=$1 AND password=$2",
-                 [username, password]);
+    const hash = await argon2.hash(password);
+    await db.none("INSERT INTO users VALUES (DEFAULT, 'user', $1, $2, $3, $4)",
+                  [first, last, email, hash]);
+    res.json({ ok: true });
   } catch (e) {
-    console.log("Login fail");
-    res.end();
+    if (e instanceof AggregateError)
+      res.status(500).json({ error: "A problem occurred." });
+    else
+      res.status(409).json({ error: "Email already exists." });
+  }
+});
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (email === undefined || password === undefined) {
+    res.status(400).json({ error: "One or more required fields are missing." });
     return;
   }
 
-  // Start a session
-  req.session.user = username;
-  res.end();
+  try {
+    const q = await db.one("SELECT * FROM users WHERE email=$1", email);
+    if (await argon2.verify(q.password, password)) {
+      // Start a session
+      req.session.user = email;
+      res.json({ ok: true });
+    } else {
+      console.log("Failed login attempt for", email, "from", req.ip);
+      res.status(401).json({ error: "Email or password is incorrect." });
+    }
+  } catch (e) {
+    res.status(500).json({ error: "A problem occurred." });
+  }
 });
 
 app.listen(PORT, () => {
