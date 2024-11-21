@@ -6,7 +6,7 @@ import { Link } from "@mui/material";
 import Password from "./Password.tsx";
 
 import "./api.ts";
-import { setTitle } from "./helpers";
+import { setTitle } from "./helpers.ts";
 
 export default function LoginPage() {
   setTitle("Log in");

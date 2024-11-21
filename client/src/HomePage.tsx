@@ -1,6 +1,6 @@
 import classes from "./HomePage.module.css";
 
-import { setTitle } from "./helpers";
+import { setTitle } from "./helpers.ts";
 
 import config from "../../app-config.json";
 
