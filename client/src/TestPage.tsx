@@ -1,4 +1,4 @@
-import { setTitle } from "./helpers";
+import { setTitle } from "./helpers.ts";
 
 export default function TestPage() {
   setTitle("Test");

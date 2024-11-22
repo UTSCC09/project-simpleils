@@ -1,6 +1,6 @@
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
-import { setTitle } from "./helpers";
+import { setTitle } from "./helpers.ts";
 
 export default function CreditsPage() {
   const error = useRouteError();

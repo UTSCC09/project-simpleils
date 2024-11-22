@@ -1,6 +1,6 @@
 import { Link } from "@mui/material";
 
-import { setTitle } from "./helpers";
+import { setTitle } from "./helpers.ts";
 
 export default function CreditsPage() {
   setTitle("Credits");

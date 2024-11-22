@@ -5,7 +5,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["client/dist", "server/dist"]
+    ignores: ["client/dist/", "server/dist/"]
   },
   {
     languageOptions: {
@@ -168,6 +168,11 @@ export default tseslint.config(
       "@stylistic/type-generic-spacing": "error",
       "@stylistic/type-named-tuple-spacing": "error",
       "@stylistic/yield-star-spacing": ["error", "after"]
+    }
+  },
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off"
     }
   }
 );

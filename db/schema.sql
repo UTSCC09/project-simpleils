@@ -3,6 +3,6 @@ CREATE TABLE users (
     type text NOT NULL,
     first_name text NOT NULL,
     last_name text NOT NULL,
-    email text NOT NULL,
-    password text NOT NULL
+    email text NOT NULL UNIQUE,
+    password character(97) NOT NULL
 );
