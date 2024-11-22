@@ -14,6 +14,7 @@ export default function Password(props: ComponentProps<typeof TextField>) {
           endAdornment: (
             <InputAdornment position="end">
               <IconButton
+                type="button"
                 name={`visibility${passwordShow ? "-off" : ""}`}
                 aria-label={`${passwordShow ? "Hide" : "Show"} password`}
                 onClick={

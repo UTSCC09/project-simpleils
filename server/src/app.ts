@@ -25,13 +25,10 @@ const db = pgp({
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD
 });
+const { QueryResultError } = pgp.errors;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use((req, res, next) => {
-  console.log("HTTP request", req.method, req.url, req.body);
-  next();
-});
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
@@ -44,7 +41,14 @@ app.use(
 );
 
 if (process.env.NODE_ENV === "dev") {
-  app.use(cors({ origin: "http://localhost:5173" }));
+  app.use((req, res, next) => {
+    console.log("HTTP request", req.method, req.url, req.body);
+    next();
+  });
+  app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+  }));
 } else if (process.env.NODE_ENV === "prod") {
   app.use(express.static(path.join(import.meta.dirname, "../../client/dist")));
 
@@ -92,6 +96,11 @@ app.post("/api/login", async (req, res) => {
       res.status(401).json({ error: "Email or password is incorrect." });
     }
   } catch (e) {
+    if (e instanceof QueryResultError) {
+      console.log("Failed login attempt for", email, "from", req.ip);
+      res.status(401).json({ error: "Email or password is incorrect." });
+      return;
+    }
     res.status(500).json({ error: "A problem occurred." });
   }
 });
