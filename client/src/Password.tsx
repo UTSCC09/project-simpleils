@@ -17,6 +17,7 @@ export default function Password(props: ComponentProps<typeof TextField>) {
                 type="button"
                 name={`visibility${passwordShow ? "-off" : ""}`}
                 aria-label={`${passwordShow ? "Hide" : "Show"} password`}
+                tabIndex={-1}
                 onClick={
                   e => {
                     e.preventDefault();

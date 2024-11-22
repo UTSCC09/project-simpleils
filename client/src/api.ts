@@ -7,11 +7,12 @@ async function handleResponse(res: Response) {
   throw new Error((await res.json()).error);
 }
 
-export async function signUp(username: string, password: string) {
+export async function signUp(first: string, last: string, email: string,
+                             password: string) {
   const res = await fetch(`${BASE_URL}/api/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ first, last, email, password })
   });
   return handleResponse(res);
 }
