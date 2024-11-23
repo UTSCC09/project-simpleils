@@ -49,16 +49,10 @@ if (process.env.NODE_ENV === "dev") {
     origin: "http://localhost:5173",
     credentials: true
   }));
-} else if (process.env.NODE_ENV === "prod") {
-  app.use(express.static(path.join(import.meta.dirname, "../../client/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(import.meta.dirname, "../../client/dist/index.html"));
-  });
 }
 
 // Authentication routes
-app.post("/api/signup", async (req, res) => {
+app.post("/signup", async (req, res) => {
   const { first, last, email, password } = req.body;
   if (first === undefined || last === undefined || email === undefined
     || password === undefined) {
@@ -78,7 +72,7 @@ app.post("/api/signup", async (req, res) => {
     } else { res.status(409).json({ error: "Email already exists." }); }
   }
 });
-app.post("/api/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (email === undefined || password === undefined) {
     res.status(400).json({ error: "One or more required fields are missing." });
@@ -108,6 +102,7 @@ app.post("/api/login", async (req, res) => {
 
 app.listen(PORT, () => {
   console.log("SimpleILS backend listening on port", PORT);
+  console.log("Version:", process.env.TAG);
   console.log("Running server in mode:", process.env.NODE_ENV);
 });
 

@@ -1,5 +1,7 @@
+import config from "../../app-config.json";
+
 const BASE_URL = import.meta.env.DEV
-  ? "http://localhost:3000" : "http://simpleils.tech";
+  ? "http://localhost:3000" : `${config.url}/api`;
 
 async function handleResponse(res: Response) {
   if (res.ok)
@@ -9,7 +11,7 @@ async function handleResponse(res: Response) {
 
 export async function signUp(first: string, last: string, email: string,
                              password: string) {
-  const res = await fetch(`${BASE_URL}/api/signup`, {
+  const res = await fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ first, last, email, password })
@@ -18,7 +20,7 @@ export async function signUp(first: string, last: string, email: string,
 }
 
 export async function logIn(email: string, password: string) {
-  const res = await fetch(`${BASE_URL}/api/login`, {
+  const res = await fetch(`${BASE_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
