@@ -1,8 +1,12 @@
 # syntax=docker/dockerfile:1
 
 FROM node:23.1-bookworm
-COPY . /simpleils
-WORKDIR /simpleils
-RUN npm install -ws && npm run build -ws
+RUN useradd --system --shell /sbin/nologin simpleils
+COPY . /opt/simpleils
+WORKDIR /opt/simpleils
+RUN npm install --workspace server && npm run build --workspace server \
+    && npm prune --omit=dev --workspace server
 EXPOSE 3000
-CMD ["npm", "start", "-w", "server"]
+
+USER simpleils
+CMD ["npm", "start", "--workspace", "server"]
