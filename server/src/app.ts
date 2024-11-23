@@ -19,7 +19,7 @@ const PORT = 3000;
 const app = express();
 const pgp = pgPromise();
 const db = pgp({
-  host: "localhost",
+  host: process.env.NODE_ENV === "dev" ? "localhost" : "db",
   port: 5432,
   database: process.env.POSTGRES_DB,
   user: process.env.POSTGRES_USER,
@@ -72,10 +72,10 @@ app.post("/api/signup", async (req, res) => {
                   [first, last, email, hash]);
     res.json({ ok: true });
   } catch (e) {
-    if (e instanceof AggregateError)
+    if (e instanceof AggregateError) {
       res.status(500).json({ error: "A problem occurred." });
-    else
-      res.status(409).json({ error: "Email already exists." });
+      console.log(e);
+    } else { res.status(409).json({ error: "Email already exists." }); }
   }
 });
 app.post("/api/login", async (req, res) => {
@@ -102,6 +102,7 @@ app.post("/api/login", async (req, res) => {
       return;
     }
     res.status(500).json({ error: "A problem occurred." });
+    console.log(e);
   }
 });
 
