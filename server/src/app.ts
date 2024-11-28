@@ -2,7 +2,7 @@ import argon2 from "argon2";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import session from "express-session";
+import session, { SessionOptions } from "express-session";
 import path from "path";
 import pgPromise from "pg-promise";
 
@@ -29,16 +29,16 @@ const { QueryResultError } = pgp.errors;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET!,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      sameSite: "strict"
-    }
-  })
-);
+
+
+const sess: SessionOptions = {
+  secret: process.env.SESSION_SECRET!,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    sameSite: "strict"
+  }
+};
 
 if (process.env.NODE_ENV === "dev") {
   app.use((req, res, next) => {
@@ -49,7 +49,11 @@ if (process.env.NODE_ENV === "dev") {
     origin: "http://localhost:5173",
     credentials: true
   }));
+} else {
+  app.set("trust proxy", true);
+  sess.cookie!.secure = true;
 }
+app.use(session(sess));
 
 // Authentication routes
 app.post("/signup", async (req, res) => {
