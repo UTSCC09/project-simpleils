@@ -4,16 +4,22 @@ name:
 services:
   web:
     container_name: web
-    image: simpleils-web:${TAG}
+    image: ghcr.io/utscc09/simpleils-web:${TAG}
     build:
       context: .
       dockerfile: server/Dockerfile
     restart: always
+    environment:
+      TAG: ${TAG}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      SESSION_SECRET: ${SESSION_SECRET}
     depends_on:
       - db
   db:
     container_name: db
-    image: simpleils-db:${TAG}
+    image: ghcr.io/utscc09/simpleils-db:${TAG}
     build: db
     restart: always
     environment:
@@ -24,13 +30,16 @@ services:
       - dbdata:/var/lib/postgresql/data
   nginx:
     container_name: nginx
-    image: simpleils-nginx:${TAG}
+    image: ghcr.io/utscc09/simpleils-nginx:${TAG}
     build:
       context: .
       dockerfile: nginx/Dockerfile
     restart: always
     ports:
       - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
 
 volumes:
   dbdata:
