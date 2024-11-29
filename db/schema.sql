@@ -6,3 +6,12 @@ CREATE TABLE users (
     email text NOT NULL UNIQUE,
     password character(97) NOT NULL
 );
+
+INSERT INTO users VALUES (
+    DEFAULT,
+    'admin',
+    'Admin',
+    'Account',
+    'admin@simpleils.tech',
+    '$argon2id$v=19$m=65536,t=3,p=4$PGsdJSTf73FtFGD6tHk4Zw$2erSbSEr7qxTvvPR46Ye/PzDxd7efC46kRgY7gFByFo'
+);
