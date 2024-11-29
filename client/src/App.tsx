@@ -4,10 +4,13 @@ import type { LinkProps } from "@mui/material";
 import type { MouseEventHandler, ReactNode } from "react";
 import type { LinkProps as RouterLinkProps } from "react-router-dom";
 
-import { createTheme, useColorScheme, StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
-import { forwardRef, useEffect, useState } from "react";
+import { createTheme, useColorScheme, StyledEngineProvider,
+         ThemeProvider } from "@mui/material/styles";
+import { createContext, Dispatch, forwardRef, SetStateAction, useContext,
+         useEffect, useState } from "react";
 import { Button, Link } from "@mui/material";
-import { useLocation, Link as RouterLink, Outlet, ScrollRestoration } from "react-router-dom";
+import { useLocation, Link as RouterLink, Outlet,
+         ScrollRestoration } from "react-router-dom";
 
 import { IconButton } from "./icons.tsx";
 
@@ -76,6 +79,16 @@ theme.components!.MuiLink!.styleOverrides = {
   }
 };
 
+export interface UserData {
+  loggedIn: boolean;
+  name?: { first: string; last: string };
+}
+
+export const UserContext = createContext({} as {
+  user: UserData;
+  setUser: Dispatch<SetStateAction<UserData>>;
+});
+
 function ThemeButton({ className }: { className: string }) {
   const { mode, setMode } = useColorScheme();
   const newMode = mode === "light" ? "dark" : "light";
@@ -101,7 +114,7 @@ function MenuButton({ className, onClick, menuOpen }: MenuButtonProps) {
 }
 
 function PageHeader() {
-  const loggedIn = false;
+  const { user } = useContext(UserContext);
   const [menuOpen, setMenuState] = useState(false);
   const location = useLocation();
   useEffect(() => {
@@ -122,32 +135,40 @@ function PageHeader() {
         onClick={() => { setMenuState(!menuOpen); }}
         menuOpen={menuOpen}
       />
-      {
-        !loggedIn && (
-          <div className="header-login">
-            <Button variant="contained" href="/login">Log in</Button>
-          </div>
-        )
-      }
+      <div className="header-auth">
+        {
+          user.loggedIn ? <Button variant="contained">Log out</Button>
+            : <Button variant="contained" href="/login">Log in</Button>
+        }
+      </div>
     </header>
   );
 }
 
 export default function App({ children }: { children?: ReactNode }) {
+  const userStore = localStorage.getItem("user");
+  const [user, setUser] = useState((userStore === null ? { loggedIn: false }
+    : JSON.parse(userStore)) as UserData);
+  useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <PageHeader />
-        <main>
-          { children ?? <Outlet />}
-        </main>
-        <footer className="page-foot">
-          <nav>
-            <Link href="/credits">Credits</Link>
-            <Link href="/test">Test</Link>
-          </nav>
-        </footer>
-        <ScrollRestoration />
+        <UserContext.Provider value={{ user, setUser }}>
+          <PageHeader />
+          <main>
+            { children ?? <Outlet />}
+          </main>
+          <footer className="page-foot">
+            <nav>
+              <Link href="/credits">Credits</Link>
+              <Link href="/test">Test</Link>
+            </nav>
+          </footer>
+          <ScrollRestoration />
+        </UserContext.Provider>
       </ThemeProvider>
     </StyledEngineProvider>
   );
