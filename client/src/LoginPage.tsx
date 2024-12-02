@@ -31,7 +31,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   useEffect(() => {
     if (user.loggedIn)
-      navigate("/");
+      navigate("/dashboard");
   }, [user]);
   setTitle("Log in");
 

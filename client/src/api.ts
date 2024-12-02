@@ -28,3 +28,16 @@ export async function logIn(email: string, password: string) {
   });
   return handleResponse(res);
 }
+
+export interface User {
+  id: number;
+  type: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+export async function getUsers(): Promise<Array<User>> {
+  const res = await fetch(`${BASE_URL}/users`);
+  return handleResponse(res);
+}

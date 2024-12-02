@@ -120,11 +120,12 @@ function PageHeader() {
   useEffect(() => {
     setMenuState(false);
   }, [location]);
+
   return (
     <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
       <Link href="/" className="site-title">{config.name}</Link>
       <nav>
-        <Link href="/test">Test</Link>
+        <Link href="/dashboard">Dashboard</Link>
         <Link href="/test">Test</Link>
         <Link href="/test">Test</Link>
         <Link href="/test">Test</Link>
@@ -164,7 +165,7 @@ export default function App({ children }: { children?: ReactNode }) {
           <footer className="page-foot">
             <nav>
               <Link href="/credits">Credits</Link>
-              <Link href="/test">Test</Link>
+              <Link href="https://github.com/UTSCC09/project-simpleils">GitHub</Link>
             </nav>
           </footer>
           <ScrollRestoration />

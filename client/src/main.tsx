@@ -6,6 +6,7 @@ import "./index.css";
 
 import App from "./App.tsx";
 import CreditsPage from "./CreditsPage.tsx";
+import Dashboard from "./Dashboard.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import HomePage from "./HomePage.tsx";
 import LoginPage from "./LoginPage.tsx";
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "credits", element: <CreditsPage /> },
+      { path: "dashboard", element: <Dashboard /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "test", element: <TestPage /> }

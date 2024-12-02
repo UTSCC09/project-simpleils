@@ -90,15 +90,26 @@ app.post("/login", async (req, res) => {
       req.session.user = email;
       res.json({ ok: true });
     } else {
-      console.log("Failed login attempt for", email, "from", req.ip);
       res.status(401).json({ error: "Email or password is incorrect." });
+      console.log("Failed login attempt for", email, "from", req.ip);
     }
   } catch (e) {
     if (e instanceof QueryResultError) {
-      console.log("Failed login attempt for", email, "from", req.ip);
       res.status(401).json({ error: "Email or password is incorrect." });
+      console.log("Failed login attempt for", email, "from", req.ip);
       return;
     }
+    res.status(500).json({ error: "A problem occurred." });
+    console.log(e);
+  }
+});
+
+// Data routes
+app.get("/users", async (req, res) => {
+  try {
+    const q = await db.manyOrNone("SELECT id, type, first_name, last_name, email FROM users");
+    res.json(q);
+  } catch (e) {
     res.status(500).json({ error: "A problem occurred." });
     console.log(e);
   }
