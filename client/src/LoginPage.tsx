@@ -18,11 +18,11 @@ async function handleLogin(e: FormEvent<HTMLFormElement>) {
 
   try {
     const data = new FormData(e.currentTarget);
-    await logIn(data.get("email") as string, data.get("password") as string);
-    return true;
+    const res = await logIn(data.get("email") as string, data.get("password") as string);
+    return [true, res];
   } catch (err) {
     document.getElementById("error")!.innerHTML = (err as Error).message;
-    return false;
+    return [false, undefined];
   }
 }
 
@@ -43,8 +43,9 @@ export default function LoginPage() {
         <form
           className={classes.authForm}
           onSubmit={async e => {
-            if (await handleLogin(e))
-              setUser({ loggedIn: true });
+            const res = await handleLogin(e);
+            if (res[0])
+              setUser({ loggedIn: true, ...res[1] });
           }}
         >
           <TextField type="email" name="email" label="Email" autoComplete="email" required />

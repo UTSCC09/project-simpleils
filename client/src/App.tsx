@@ -81,7 +81,10 @@ theme.components!.MuiLink!.styleOverrides = {
 
 export interface UserData {
   loggedIn: boolean;
+  id?: string;
+  type?: "user" | "staff" | "admin";
   name?: { first: string; last: string };
+  email?: string;
 }
 
 export const UserContext = createContext({} as {

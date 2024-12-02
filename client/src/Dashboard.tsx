@@ -1,12 +1,15 @@
 import type { User } from "./api.ts";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { getUsers } from "./api.ts";
+import { getUsers, changeUserType } from "./api.ts";
+import { UserContext } from "./App.tsx";
 import { setTitle } from "./helpers.ts";
-import { Paper, Table, TableBody, TableContainer, TableCell, TableHead, TableRow } from "@mui/material";
+import { FormControl, MenuItem, Paper, Select, Table, TableBody, TableContainer,
+         TableCell, TableHead, TableRow } from "@mui/material";
 
 export default function Dashboard() {
+  const { user } = useContext(UserContext);
   const [users, setUsers] = useState([] as Array<User>);
   useEffect(() => {
     getUsers().then(setUsers);
@@ -29,22 +32,36 @@ export default function Dashboard() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map(user => (
-              <TableRow key={user.id}>
+            {users.map(u => (
+              <TableRow key={u.id}>
                 <TableCell>
-                  {user.id}
+                  {u.id}
                 </TableCell>
                 <TableCell>
-                  {user.type}
+                  {u.id === user.id ? u.type : (
+                    <FormControl size="small">
+                      <Select
+                        defaultValue={u.type}
+                        sx={{ fontSize: "1rem" }}
+                        onChange={e => {
+                          changeUserType(u.id, e.target.value);
+                        }}
+                      >
+                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="staff">Staff</MenuItem>
+                        <MenuItem value="admin">Admin</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
                 </TableCell>
                 <TableCell>
-                  {user.first_name}
+                  {u.first_name}
                 </TableCell>
                 <TableCell>
-                  {user.last_name}
+                  {u.last_name}
                 </TableCell>
                 <TableCell>
-                  {user.email}
+                  {u.email}
                 </TableCell>
               </TableRow>
             ))}

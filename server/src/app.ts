@@ -87,8 +87,13 @@ app.post("/login", async (req, res) => {
     const q = await db.one("SELECT * FROM users WHERE email=$1", email);
     if (await argon2.verify(q.password, password)) {
       // Start a session
-      req.session.user = email;
-      res.json({ ok: true });
+      req.session.user = q.id;
+      res.json({
+        id: q.id,
+        type: q.type,
+        name: { first: q.first_name, last: q.last_name },
+        email: q.email
+      });
     } else {
       res.status(401).json({ error: "Email or password is incorrect." });
       console.log("Failed login attempt for", email, "from", req.ip);
@@ -110,6 +115,28 @@ app.get("/users", async (req, res) => {
     const q = await db.manyOrNone("SELECT id, type, first_name, last_name, email FROM users");
     res.json(q);
   } catch (e) {
+    res.status(500).json({ error: "A problem occurred." });
+    console.log(e);
+  }
+});
+app.patch("/users/:id", async (req, res) => {
+  if (!["user", "staff", "admin"].includes(req.body.type)) {
+    res.status(400).json({ error: "Invalid account type specified." });
+    return;
+  }
+  if (req.params.id === req.session.user) {
+    res.status(400).json({ error: "You may not modify your own account type." });
+    return;
+  }
+  try {
+    await db.none("UPDATE users SET type = $1 WHERE id = $2",
+                  [req.body.type, req.params.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "User ID does not exist." });
+      return;
+    }
     res.status(500).json({ error: "A problem occurred." });
     console.log(e);
   }
