@@ -132,6 +132,8 @@ function PageHeader() {
       <Link href="/" className="site-title">{config.name}</Link>
       <nav>
         {user.loggedIn && <Link href="/dashboard">Dashboard</Link>}
+        {(user.type === "staff" || user.type === "admin")
+        && <Link href="/records">Records</Link>}
       </nav>
       <ThemeButton className="header-theme-button" />
       <MenuButton

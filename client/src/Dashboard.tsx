@@ -9,6 +9,10 @@ import { FormControl, MenuItem, Paper, Select, Table, TableBody, TableContainer,
          TableCell, TableHead, TableRow } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+function capitalize(str: string) {
+  return str[0].toUpperCase() + str.slice(1);
+}
+
 function UserManagement() {
   const { user } = useContext(UserContext);
   const [users, setUsers] = useState([] as Array<User>);
@@ -37,7 +41,7 @@ function UserManagement() {
                   {u.id}
                 </TableCell>
                 <TableCell>
-                  {u.id === user.id ? u.type : (
+                  {u.id === user.id ? capitalize(u.type) : (
                     <FormControl size="small">
                       <Select
                         defaultValue={u.type}

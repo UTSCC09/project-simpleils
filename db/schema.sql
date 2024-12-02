@@ -12,6 +12,28 @@ CREATE TABLE google (
     sub character(21) NOT NULL UNIQUE
 );
 
+CREATE TABLE authors (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    first_name text NOT NULL,
+    last_name text NOT NULL,
+    bio text
+);
+
+CREATE TABLE publishers (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name text NOT NULL
+);
+
+CREATE TABLE books (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    title text NOT NULL,
+    author bigint REFERENCES authors,
+    publisher bigint REFERENCES publishers,
+    year smallint,
+    pages smallint,
+    summary text
+);
+
 INSERT INTO users VALUES (
     DEFAULT,
     'admin',

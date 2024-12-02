@@ -10,6 +10,7 @@ import Dashboard from "./Dashboard.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import HomePage from "./HomePage.tsx";
 import LoginPage from "./LoginPage.tsx";
+import Records from "./Records.tsx";
 import SignupPage from "./SignupPage.tsx";
 import TestPage from "./TestPage.tsx";
 
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
       { path: "credits", element: <CreditsPage /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "login", element: <LoginPage /> },
+      { path: "records", element: <Records /> },
       { path: "signup", element: <SignupPage /> },
       { path: "test", element: <TestPage /> }
     ]
