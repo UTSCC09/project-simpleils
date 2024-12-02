@@ -167,7 +167,9 @@ app.post("/login/google", async (req, res) => {
   try {
     const q = await db.oneOrNone(
       `SELECT users.id, type, first_name, last_name, email
-           FROM users JOIN google ON users.id = google.id`
+           FROM users JOIN google ON users.id = google.id
+           WHERE sub = $1`,
+      sub
     );
     if (q !== null) {
       // Start a session
