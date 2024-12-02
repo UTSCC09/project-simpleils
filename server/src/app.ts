@@ -193,6 +193,15 @@ app.post("/login/google", async (req, res) => {
     const q = await db.one("INSERT INTO users VALUES (DEFAULT, 'user', $1, $2, $3, $4) RETURNING id",
                            [first, last, email, ""]);
     await db.none("INSERT INTO google VALUES ($1, $2)", [q.id, sub]);
+    // Start a session
+    const user: User = {
+      id: q.id,
+      type: q.type,
+      name: { first: q.first_name, last: q.last_name },
+      email: q.email
+    };
+    req.session.user = user;
+    res.json(user);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "A problem occurred." });
