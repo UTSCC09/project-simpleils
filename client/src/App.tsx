@@ -124,10 +124,6 @@ function PageHeader() {
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!user.loggedIn)
-      navigate("/login");
-  }, [user]);
-  useEffect(() => {
     setMenuState(false);
   }, [location]);
 
@@ -135,7 +131,7 @@ function PageHeader() {
     <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
       <Link href="/" className="site-title">{config.name}</Link>
       <nav>
-        <Link href="/dashboard">Dashboard</Link>
+        {user.loggedIn && <Link href="/dashboard">Dashboard</Link>}
       </nav>
       <ThemeButton className="header-theme-button" />
       <MenuButton
@@ -151,6 +147,7 @@ function PageHeader() {
               onClick={async () => {
                 await logOut();
                 setUser({ loggedIn: false });
+                navigate("/login");
               }}
             >
               Log out

@@ -7,18 +7,17 @@ import { UserContext } from "./App.tsx";
 import { setTitle } from "./helpers.ts";
 import { FormControl, MenuItem, Paper, Select, Table, TableBody, TableContainer,
          TableCell, TableHead, TableRow } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-export default function Dashboard() {
+function UserManagement() {
   const { user } = useContext(UserContext);
   const [users, setUsers] = useState([] as Array<User>);
   useEffect(() => {
     getUsers().then(setUsers);
   }, []);
 
-  setTitle("Dashboard");
   return (
-    <article className="fixed-width">
-      <h1>Dashboard</h1>
+    <>
       <h2>Manage users</h2>
       <TableContainer component={Paper}>
         <Table>
@@ -68,6 +67,23 @@ export default function Dashboard() {
           </TableBody>
         </Table>
       </TableContainer>
+    </>
+  );
+}
+
+export default function Dashboard() {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user.loggedIn)
+      navigate("/login");
+  }, []);
+  setTitle("Dashboard");
+
+  return (
+    <article className="fixed-width">
+      <h1>Dashboard</h1>
+      {user.type === "admin" && <UserManagement />}
     </article>
   );
 }

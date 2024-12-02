@@ -58,7 +58,7 @@ export interface User {
 }
 
 export async function getUsers(): Promise<Array<User>> {
-  const res = await fetch(`${BASE_URL}/users`);
+  const res = await fetch(`${BASE_URL}/users`, { credentials: "include" });
   return handleResponse(res);
 }
 
@@ -66,7 +66,8 @@ export async function changeUserType(id: string, type: string) {
   const res = await fetch(`${BASE_URL}/users/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ type })
+    body: JSON.stringify({ type }),
+    credentials: "include"
   });
   return handleResponse(res);
 }

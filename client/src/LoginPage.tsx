@@ -61,7 +61,6 @@ export default function LoginPage() {
                 setUser({ loggedIn: true, ...res });
               }
             }
-            onError={console.error}
           />
         </div>
         Don't have an account? <Link href="/signup">Sign up</Link>

@@ -1,3 +1,4 @@
+import type { Request, Response, NextFunction } from "express";
 import type { TokenPayload } from "google-auth-library";
 
 import argon2 from "argon2";
@@ -10,9 +11,16 @@ import { OAuth2Client } from "google-auth-library";
 import path from "path";
 import pgPromise from "pg-promise";
 
+interface User {
+  id: string;
+  type: "user" | "staff" | "admin";
+  name: { first: string; last: string };
+  email: string;
+}
+
 declare module "express-session" {
   interface SessionData {
-    user: string;
+    user: User;
   }
 }
 
@@ -64,6 +72,22 @@ if (process.env.NODE_ENV === "dev") {
 }
 app.use(session(sess));
 
+function requirePerms(perms: "user" | "staff" | "admin") {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (req.session.user === undefined) {
+      res.status(401).json({ error: "You must log in to perform that action." });
+      return;
+    }
+
+    const { type } = req.session.user;
+    if (type === "admin" || type === "staff" && perms !== "admin"
+      || type === "user" && perms === "user")
+      next();
+    else
+      res.status(403).json({ error: "You have insufficient permissions to perform that action." });
+  };
+}
+
 // Authentication routes
 app.post("/signup", async (req, res) => {
   const { first, last, email, password } = req.body;
@@ -98,13 +122,14 @@ app.post("/login", async (req, res) => {
     const q = await db.one("SELECT * FROM users WHERE email = $1", email);
     if (await argon2.verify(q.password, password)) {
       // Start a session
-      req.session.user = q.id;
-      res.json({
+      const user: User = {
         id: q.id,
         type: q.type,
         name: { first: q.first_name, last: q.last_name },
         email: q.email
-      });
+      };
+      req.session.user = user;
+      res.json(user);
     } else {
       console.log("Failed login attempt for", email, "from", req.ip);
       res.status(401).json({ error: "Email or password is incorrect." });
@@ -146,13 +171,14 @@ app.post("/login/google", async (req, res) => {
     );
     if (q !== null) {
       // Start a session
-      req.session.user = q.id;
-      res.json({
+      const user: User = {
         id: q.id,
         type: q.type,
         name: { first: q.first_name, last: q.last_name },
         email: q.email
-      });
+      };
+      req.session.user = user;
+      res.json(user);
       return;
     }
   } catch (e) {
@@ -182,7 +208,7 @@ app.post("/logout", (req, res) => {
 });
 
 // Data routes
-app.get("/users", async (req, res) => {
+app.get("/users", requirePerms("staff"), async (req, res) => {
   try {
     const q = await db.manyOrNone("SELECT id, type, first_name, last_name, email FROM users");
     res.json(q);
@@ -191,12 +217,12 @@ app.get("/users", async (req, res) => {
     res.status(500).json({ error: "A problem occurred." });
   }
 });
-app.patch("/users/:id", async (req, res) => {
+app.patch("/users/:id", requirePerms("admin"), async (req, res) => {
   if (!["user", "staff", "admin"].includes(req.body.type)) {
     res.status(400).json({ error: "Invalid account type specified." });
     return;
   }
-  if (req.params.id === req.session.user) {
+  if (req.params.id === req.session.user?.id) {
     res.status(400).json({ error: "You may not modify your own account type." });
     return;
   }
