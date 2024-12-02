@@ -1,4 +1,5 @@
 import argon2 from "argon2";
+import pgSimple from "connect-pg-simple";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
@@ -26,10 +27,10 @@ const db = pgp({
   password: process.env.POSTGRES_PASSWORD
 });
 const { QueryResultError } = pgp.errors;
+const PGSession = pgSimple(session);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 
 const sess: SessionOptions = {
   secret: process.env.SESSION_SECRET!,
@@ -37,7 +38,11 @@ const sess: SessionOptions = {
   saveUninitialized: false,
   cookie: {
     sameSite: "strict"
-  }
+  },
+  store: new PGSession({
+    pgPromise: db,
+    createTableIfMissing: true
+  })
 };
 
 if (process.env.NODE_ENV === "dev") {
@@ -71,9 +76,11 @@ app.post("/signup", async (req, res) => {
     res.json({ ok: true });
   } catch (e) {
     if (e instanceof AggregateError) {
-      res.status(500).json({ error: "A problem occurred." });
       console.log(e);
-    } else { res.status(409).json({ error: "Email already exists." }); }
+      res.status(500).json({ error: "A problem occurred." });
+    } else {
+      res.status(409).json({ error: "Email already exists." });
+    }
   }
 });
 app.post("/login", async (req, res) => {
@@ -95,17 +102,17 @@ app.post("/login", async (req, res) => {
         email: q.email
       });
     } else {
-      res.status(401).json({ error: "Email or password is incorrect." });
       console.log("Failed login attempt for", email, "from", req.ip);
+      res.status(401).json({ error: "Email or password is incorrect." });
     }
   } catch (e) {
     if (e instanceof QueryResultError) {
-      res.status(401).json({ error: "Email or password is incorrect." });
       console.log("Failed login attempt for", email, "from", req.ip);
+      res.status(401).json({ error: "Email or password is incorrect." });
       return;
     }
-    res.status(500).json({ error: "A problem occurred." });
     console.log(e);
+    res.status(500).json({ error: "A problem occurred." });
   }
 });
 app.post("/logout", (req, res) => {
@@ -125,8 +132,8 @@ app.get("/users", async (req, res) => {
     const q = await db.manyOrNone("SELECT id, type, first_name, last_name, email FROM users");
     res.json(q);
   } catch (e) {
-    res.status(500).json({ error: "A problem occurred." });
     console.log(e);
+    res.status(500).json({ error: "A problem occurred." });
   }
 });
 app.patch("/users/:id", async (req, res) => {
@@ -147,8 +154,8 @@ app.patch("/users/:id", async (req, res) => {
       res.status(404).json({ error: "User ID does not exist." });
       return;
     }
-    res.status(500).json({ error: "A problem occurred." });
     console.log(e);
+    res.status(500).json({ error: "A problem occurred." });
   }
 });
 
