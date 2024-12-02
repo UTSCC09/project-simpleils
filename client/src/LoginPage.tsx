@@ -6,10 +6,11 @@ import { Button, Paper, TextField } from "@mui/material";
 import { Link } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 
 import Password from "./Password.tsx";
 
-import { logIn } from "./api.ts";
+import { googleLogin, logIn } from "./api.ts";
 import { UserContext } from "./App.tsx";
 import { setTitle } from "./helpers.ts";
 
@@ -52,6 +53,17 @@ export default function LoginPage() {
           <Password name="password" label="Password" autoComplete="current-password" required />
           <Button type="submit" variant="contained">Log in</Button>
         </form>
+        <div className={classes.googleButton}>
+          <GoogleLogin
+            onSuccess={
+              async credential => {
+                const res = await googleLogin(credential);
+                setUser({ loggedIn: true, ...res });
+              }
+            }
+            onError={console.error}
+          />
+        </div>
         Don't have an account? <Link href="/signup">Sign up</Link>
       </Paper>
     </article>

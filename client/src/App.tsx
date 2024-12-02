@@ -11,6 +11,7 @@ import { createContext, Dispatch, forwardRef, SetStateAction, useContext,
 import { Button, Link } from "@mui/material";
 import { useLocation, useNavigate, Link as RouterLink, Outlet,
          ScrollRestoration } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { logOut } from "./api.ts";
 import { IconButton } from "./icons.tsx";
@@ -135,9 +136,6 @@ function PageHeader() {
       <Link href="/" className="site-title">{config.name}</Link>
       <nav>
         <Link href="/dashboard">Dashboard</Link>
-        <Link href="/test">Test</Link>
-        <Link href="/test">Test</Link>
-        <Link href="/test">Test</Link>
       </nav>
       <ThemeButton className="header-theme-button" />
       <MenuButton
@@ -175,19 +173,21 @@ export default function App({ children }: { children?: ReactNode }) {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <UserContext.Provider value={{ user, setUser }}>
-          <PageHeader />
-          <main>
-            { children ?? <Outlet />}
-          </main>
-          <footer className="page-foot">
-            <nav>
-              <Link href="/credits">Credits</Link>
-              <Link href="https://github.com/UTSCC09/project-simpleils">GitHub</Link>
-            </nav>
-          </footer>
-          <ScrollRestoration />
-        </UserContext.Provider>
+        <GoogleOAuthProvider clientId="226296281130-pqdcnape7n1ui2ci40ejpdtqpf4is47q.apps.googleusercontent.com">
+          <UserContext.Provider value={{ user, setUser }}>
+            <PageHeader />
+            <main>
+              { children ?? <Outlet />}
+            </main>
+            <footer className="page-foot">
+              <nav>
+                <Link href="/credits">Credits</Link>
+                <Link href="https://github.com/UTSCC09/project-simpleils">GitHub</Link>
+              </nav>
+            </footer>
+            <ScrollRestoration />
+          </UserContext.Provider>
+        </GoogleOAuthProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   );

@@ -16,9 +16,19 @@
   margin-bottom: 1rem;
 }
 
-.authForm {
+.auth-form {
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.google-button {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+
+  iframe {
+    color-scheme: normal;
+  }
 }

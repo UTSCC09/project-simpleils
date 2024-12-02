@@ -1,9 +1,12 @@
+import type { TokenPayload } from "google-auth-library";
+
 import argon2 from "argon2";
 import pgSimple from "connect-pg-simple";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import session, { SessionOptions } from "express-session";
+import { OAuth2Client } from "google-auth-library";
 import path from "path";
 import pgPromise from "pg-promise";
 
@@ -28,6 +31,7 @@ const db = pgp({
 });
 const { QueryResultError } = pgp.errors;
 const PGSession = pgSimple(session);
+const client = new OAuth2Client();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -76,7 +80,7 @@ app.post("/signup", async (req, res) => {
     res.json({ ok: true });
   } catch (e) {
     if (e instanceof AggregateError) {
-      console.log(e);
+      console.error(e);
       res.status(500).json({ error: "A problem occurred." });
     } else {
       res.status(409).json({ error: "Email already exists." });
@@ -111,7 +115,58 @@ app.post("/login", async (req, res) => {
       res.status(401).json({ error: "Email or password is incorrect." });
       return;
     }
-    console.log(e);
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.post("/login/google", async (req, res) => {
+  const { credential, clientId } = req.body.credential;
+  let payload: TokenPayload;
+
+  // Verify token
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: clientId
+    });
+    payload = ticket.getPayload()!;
+  } catch (e) {
+    console.error(e);
+    res.status(400).json({ error: "Bad OAuth token." });
+    return;
+  }
+
+  const { sub, email, given_name: first, family_name: last } = payload;
+
+  // Try login
+  try {
+    const q = await db.oneOrNone(
+      `SELECT users.id, type, first_name, last_name, email
+           FROM users JOIN google ON users.id = google.id`
+    );
+    if (q !== null) {
+      // Start a session
+      req.session.user = q.id;
+      res.json({
+        id: q.id,
+        type: q.type,
+        name: { first: q.first_name, last: q.last_name },
+        email: q.email
+      });
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+
+  // Sign up instead
+  try {
+    const q = await db.one("INSERT INTO users VALUES (DEFAULT, 'user', $1, $2, $3, $4) RETURNING id",
+                           [first, last, email, ""]);
+    await db.none("INSERT INTO google VALUES ($1, $2)", [q.id, sub]);
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ error: "A problem occurred." });
   }
 });
@@ -132,7 +187,7 @@ app.get("/users", async (req, res) => {
     const q = await db.manyOrNone("SELECT id, type, first_name, last_name, email FROM users");
     res.json(q);
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).json({ error: "A problem occurred." });
   }
 });
@@ -154,7 +209,7 @@ app.patch("/users/:id", async (req, res) => {
       res.status(404).json({ error: "User ID does not exist." });
       return;
     }
-    console.log(e);
+    console.error(e);
     res.status(500).json({ error: "A problem occurred." });
   }
 });

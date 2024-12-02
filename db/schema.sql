@@ -1,10 +1,15 @@
 CREATE TABLE users (
-    id bigint GENERATED ALWAYS AS IDENTITY,
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     type text NOT NULL,
     first_name text NOT NULL,
     last_name text NOT NULL,
     email text NOT NULL UNIQUE,
     password character(97) NOT NULL
+);
+
+CREATE TABLE google (
+    id bigint PRIMARY KEY REFERENCES users,
+    sub character(21) NOT NULL UNIQUE
 );
 
 INSERT INTO users VALUES (

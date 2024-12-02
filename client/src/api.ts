@@ -1,3 +1,5 @@
+import { CredentialResponse } from "@react-oauth/google";
+
 import config from "../../app-config.json";
 
 const BASE_URL = import.meta.env.DEV
@@ -25,6 +27,16 @@ export async function logIn(email: string, password: string) {
     headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify({ email, password })
+  });
+  return handleResponse(res);
+}
+
+export async function googleLogin(credential: CredentialResponse) {
+  const res = await fetch(`${BASE_URL}/login/google`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ credential })
   });
   return handleResponse(res);
 }
