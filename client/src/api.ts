@@ -29,6 +29,14 @@ export async function logIn(email: string, password: string) {
   return handleResponse(res);
 }
 
+export async function logOut() {
+  const res = await fetch(`${BASE_URL}/logout`, {
+    method: "POST",
+    credentials: "include"
+  });
+  return handleResponse(res);
+}
+
 export interface User {
   id: string;
   type: string;

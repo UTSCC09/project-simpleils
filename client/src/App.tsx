@@ -9,9 +9,10 @@ import { createTheme, useColorScheme, StyledEngineProvider,
 import { createContext, Dispatch, forwardRef, SetStateAction, useContext,
          useEffect, useState } from "react";
 import { Button, Link } from "@mui/material";
-import { useLocation, Link as RouterLink, Outlet,
+import { useLocation, useNavigate, Link as RouterLink, Outlet,
          ScrollRestoration } from "react-router-dom";
 
+import { logOut } from "./api.ts";
 import { IconButton } from "./icons.tsx";
 
 import config from "../../app-config.json";
@@ -117,9 +118,14 @@ function MenuButton({ className, onClick, menuOpen }: MenuButtonProps) {
 }
 
 function PageHeader() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [menuOpen, setMenuState] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user.loggedIn)
+      navigate("/login");
+  }, [user]);
   useEffect(() => {
     setMenuState(false);
   }, [location]);
@@ -141,8 +147,17 @@ function PageHeader() {
       />
       <div className="header-auth">
         {
-          user.loggedIn ? <Button variant="contained">Log out</Button>
-            : <Button variant="contained" href="/login">Log in</Button>
+          user.loggedIn ? (
+            <Button
+              variant="contained"
+              onClick={async () => {
+                await logOut();
+                setUser({ loggedIn: false });
+              }}
+            >
+              Log out
+            </Button>
+          ) : <Button variant="contained" href="/login">Log in</Button>
         }
       </div>
     </header>

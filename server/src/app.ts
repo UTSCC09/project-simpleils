@@ -84,7 +84,7 @@ app.post("/login", async (req, res) => {
   }
 
   try {
-    const q = await db.one("SELECT * FROM users WHERE email=$1", email);
+    const q = await db.one("SELECT * FROM users WHERE email = $1", email);
     if (await argon2.verify(q.password, password)) {
       // Start a session
       req.session.user = q.id;
@@ -107,6 +107,16 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ error: "A problem occurred." });
     console.log(e);
   }
+});
+app.post("/logout", (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      res.status(500).json({ error: "A problem occurred." });
+      return;
+    }
+    res.clearCookie("connect.sid");
+    res.json({ ok: true });
+  });
 });
 
 // Data routes
