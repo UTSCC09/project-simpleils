@@ -221,8 +221,19 @@ app.post("/logout", (req, res) => {
 // Data routes
 app.get("/users", requirePerms("staff"), async (req, res) => {
   try {
-    const q = await db.manyOrNone("SELECT id, type, first_name, last_name, email FROM users");
-    res.json(q);
+    const skip = parseInt(req.query.skip as string) || 0;
+    if (skip < 0) {
+      res.status(400).json({ error: "skip should not be negative." });
+      return;
+    }
+
+    const q1 = await db.one("SELECT COUNT(*) FROM users");
+    const q2 = await db.manyOrNone(
+      `SELECT id, type, first_name, last_name, email FROM users
+           ORDER BY last_name OFFSET $1 LIMIT 10`,
+      skip
+    );
+    res.json({ rows: parseInt(q1.count), data: q2 });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "A problem occurred." });

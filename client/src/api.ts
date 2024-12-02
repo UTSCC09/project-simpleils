@@ -57,8 +57,10 @@ export interface User {
   email: string;
 }
 
-export async function getUsers(): Promise<Array<User>> {
-  const res = await fetch(`${BASE_URL}/users`, { credentials: "include" });
+export async function getUsers(skip?: number):
+Promise<{ rows: number; data: Array<User> }> {
+  const res = await fetch(`${BASE_URL}/users?skip=${skip ?? 0}`,
+                          { credentials: "include" });
   return handleResponse(res);
 }
 
