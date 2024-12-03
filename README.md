@@ -5,6 +5,7 @@ SimpleILS is a web-based integrated library system designed to help libraries ma
 
 ## Demo
 A demo of the app is available at https://simpleils.tech.
+There is a video demo [here](https://youtu.be/5P38lhyeeig).
 
 ## Installation
 1. Modify `app-config.json` and `nginx/nginx.conf` to customize the app name and URL.
