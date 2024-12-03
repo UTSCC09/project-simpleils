@@ -1,14 +1,12 @@
 INSERT INTO authors VALUES (
     DEFAULT,
     'J. K.',
-    'Rowling',
-    'J. K. Rowling is a British author and philanthropist.'
+    'Rowling'
 );
 INSERT INTO authors VALUES (
     DEFAULT,
     'F. Scott',
-    'Fitzgerald',
-    'F. Scott Fitzgerald was an American novelist and short story writer.'
+    'Fitzgerald'
 );
 
 INSERT INTO publishers VALUES (DEFAULT, 'Bloomsbury');

@@ -1,13 +1,11 @@
 import type { Book } from "./api.ts";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getBooks } from "./api.ts";
-import { UserContext } from "./App.tsx";
 import { setTitle } from "./helpers.ts";
-import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter,
+import { Link, Paper, Table, TableBody, TableCell, TableContainer, TableFooter,
          TableHead, TablePagination, TableRow } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
 export default function Catalogue() {
   const [page, setPage] = useState(0);
@@ -38,7 +36,7 @@ export default function Catalogue() {
             {books.map(b => (
               <TableRow key={b.id}>
                 <TableCell>
-                  {b.title}
+                  <Link href={`/browse/${b.id}`}>{b.title}</Link>
                 </TableCell>
                 <TableCell>
                   {b.author}

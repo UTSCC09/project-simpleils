@@ -161,7 +161,8 @@ app.post("/login/google", async (req, res) => {
     return;
   }
 
-  let { sub, email, given_name: first, family_name: last } = payload;
+  const { sub } = payload;
+  let { email, given_name: first, family_name: last } = payload;
   email ??= "";
   first ??= "";
   last ??= "";
@@ -302,6 +303,26 @@ app.get("/books", async (req, res) => {
     res.status(500).json({ error: "A problem occurred." });
   }
 });
+app.get("/books/:id", async (req, res) => {
+  try {
+    const q = await db.one(
+      `SELECT books.id, title, first_name, last_name, name AS publisher,
+           year, pages, summary FROM books
+           JOIN authors ON author = authors.id
+           JOIN publishers ON publisher = publishers.id
+           WHERE books.id = $1`,
+      req.params.id
+    );
+    res.json(q);
+  } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "Book ID does not exist." });
+      return;
+    }
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
 app.patch("/users/:id", requirePerms("admin"), async (req, res) => {
   if (!["user", "staff", "admin"].includes(req.body.type)) {
     res.status(400).json({ error: "Invalid account type specified." });
@@ -318,6 +339,45 @@ app.patch("/users/:id", requirePerms("admin"), async (req, res) => {
   } catch (e) {
     if (e instanceof QueryResultError) {
       res.status(404).json({ error: "User ID does not exist." });
+      return;
+    }
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.delete("/authors/:id", requirePerms("staff"), async (req, res) => {
+  try {
+    await db.none("DELETE FROM authors WHERE id = $1", req.params.id);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "Author ID does not exist." });
+      return;
+    }
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.delete("/publishers/:id", requirePerms("staff"), async (req, res) => {
+  try {
+    await db.none("DELETE FROM publishers WHERE id = $1", req.params.id);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "Publisher ID does not exist." });
+      return;
+    }
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.delete("/books/:id", requirePerms("staff"), async (req, res) => {
+  try {
+    await db.none("DELETE FROM books WHERE id = $1", req.params.id);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "Book ID does not exist." });
       return;
     }
     console.error(e);

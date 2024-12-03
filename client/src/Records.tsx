@@ -4,16 +4,18 @@ import { useContext, useEffect, useState } from "react";
 
 import { UserContext } from "./App.tsx";
 import { setTitle } from "./helpers.ts";
-import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter,
-         TableHead, TablePagination, TableRow } from "@mui/material";
+import { Button, Paper, Table, TableBody, TableCell, TableContainer,
+         TableFooter, TableHead, TablePagination, TableRow } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-import { getAuthors, getBooks, getPublishers } from "./api.ts";
+import { deleteAuthor, deleteBook, deletePublisher, getAuthors, getBooks,
+         getPublishers } from "./api.ts";
 
 function AuthorRecords() {
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(0);
   const [authors, setAuthors] = useState([] as Array<Author>);
+  const navigate = useNavigate();
   useEffect(() => {
     getAuthors(page * 10).then(({ rows: numRows, data }) => {
       setRows(numRows);
@@ -29,6 +31,7 @@ function AuthorRecords() {
             <TableCell>ID</TableCell>
             <TableCell>First name</TableCell>
             <TableCell>Last name</TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -42,6 +45,79 @@ function AuthorRecords() {
               </TableCell>
               <TableCell>
                 {a.last_name}
+              </TableCell>
+              <TableCell>
+                <Button
+                  color="error"
+                  onClick={() => {
+                    deleteAuthor(a.id);
+                    navigate("/dashboard");
+                  }}
+                >
+                  Delete
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              colSpan={4}
+              rowsPerPageOptions={[10]}
+              rowsPerPage={10}
+              count={rows}
+              page={page}
+              onPageChange={(e, newPage) => { setPage(newPage); }}
+            />
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableContainer>
+  );
+}
+
+function PublisherRecords() {
+  const [page, setPage] = useState(0);
+  const [rows, setRows] = useState(0);
+  const [publishers, setPublishers] = useState([] as Array<Publisher>);
+  const navigate = useNavigate();
+  useEffect(() => {
+    getPublishers(page * 10).then(({ rows: numRows, data }) => {
+      setRows(numRows);
+      setPublishers(data);
+    });
+  }, [page]);
+
+  return (
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {publishers.map(p => (
+            <TableRow key={p.id}>
+              <TableCell>
+                {p.id}
+              </TableCell>
+              <TableCell>
+                {p.name}
+              </TableCell>
+              <TableCell>
+                <Button
+                  color="error"
+                  onClick={() => {
+                    deletePublisher(p.id);
+                    navigate("/dashboard");
+                  }}
+                >
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}
@@ -63,59 +139,11 @@ function AuthorRecords() {
   );
 }
 
-function PublisherRecords() {
-  const [page, setPage] = useState(0);
-  const [rows, setRows] = useState(0);
-  const [publishers, setPublishers] = useState([] as Array<Publisher>);
-  useEffect(() => {
-    getPublishers(page * 10).then(({ rows: numRows, data }) => {
-      setRows(numRows);
-      setPublishers(data);
-    });
-  }, [page]);
-
-  return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {publishers.map(p => (
-            <TableRow key={p.id}>
-              <TableCell>
-                {p.id}
-              </TableCell>
-              <TableCell>
-                {p.name}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              colSpan={2}
-              rowsPerPageOptions={[10]}
-              rowsPerPage={10}
-              count={rows}
-              page={page}
-              onPageChange={(e, newPage) => { setPage(newPage); }}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
-  );
-}
-
 function BookRecords() {
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(0);
   const [books, setBooks] = useState([] as Array<Book>);
+  const navigate = useNavigate();
   useEffect(() => {
     getBooks(page * 10).then(({ rows: numRows, data }) => {
       setRows(numRows);
@@ -133,6 +161,7 @@ function BookRecords() {
             <TableCell>Author</TableCell>
             <TableCell>Publisher</TableCell>
             <TableCell>Year</TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -153,13 +182,24 @@ function BookRecords() {
               <TableCell>
                 {b.year}
               </TableCell>
+              <TableCell>
+                <Button
+                  color="error"
+                  onClick={() => {
+                    deleteBook(b.id);
+                    navigate("/dashboard");
+                  }}
+                >
+                  Delete
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
             <TablePagination
-              colSpan={5}
+              colSpan={6}
               rowsPerPageOptions={[10]}
               rowsPerPage={10}
               count={rows}

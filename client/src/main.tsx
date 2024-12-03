@@ -2,9 +2,12 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { StrictMode } from "react";
 
+import { getBook } from "./api.ts";
+
 import "./index.css";
 
 import App from "./App.tsx";
+import BookView from "./BookView.tsx";
 import Catalogue from "./Catalogue.tsx";
 import CreditsPage from "./CreditsPage.tsx";
 import Dashboard from "./Dashboard.tsx";
@@ -14,6 +17,10 @@ import LoginPage from "./LoginPage.tsx";
 import Records from "./Records.tsx";
 import SignupPage from "./SignupPage.tsx";
 import TestPage from "./TestPage.tsx";
+
+function bookLoader({ params }: { params: any }) {
+  return getBook(params.id);
+}
 
 const router = createBrowserRouter([
   {
@@ -27,6 +34,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "browse", element: <Catalogue /> },
+      { path: "browse/:id", loader: bookLoader, element: <BookView /> },
       { path: "credits", element: <CreditsPage /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "login", element: <LoginPage /> },

@@ -104,11 +104,57 @@ export async function getBooks(skip?: number): Promise<DataTable<Book>> {
   return handleResponse(res);
 }
 
+export interface DetailedBook {
+  id: string;
+  title: string;
+  first_name: string;
+  last_name: string;
+  publisher: string;
+  year: number;
+  pages: number;
+  summary: string;
+}
+
+export async function getBook(id: string): Promise<DetailedBook> {
+  const res = await fetch(`${BASE_URL}/books/${id}`);
+  return handleResponse(res);
+}
+
 export async function changeUserType(id: string, type: string) {
   const res = await fetch(`${BASE_URL}/users/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ type }),
+    credentials: "include"
+  });
+  return handleResponse(res);
+}
+
+export async function deleteAuthor(id: string) {
+  const res = await fetch(`${BASE_URL}/authors/${id}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
+    credentials: "include"
+  });
+  return handleResponse(res);
+}
+
+export async function deletePublisher(id: string) {
+  const res = await fetch(`${BASE_URL}/publishers/${id}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
+    credentials: "include"
+  });
+  return handleResponse(res);
+}
+
+export async function deleteBook(id: string) {
+  const res = await fetch(`${BASE_URL}/books/${id}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
     credentials: "include"
   });
   return handleResponse(res);
