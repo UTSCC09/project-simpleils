@@ -2,6 +2,8 @@ import classes from "./auth.module.css";
 
 import type { FormEvent } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import { Button, Paper, TextField } from "@mui/material";
 import { Link } from "@mui/material";
 
@@ -19,19 +21,28 @@ async function handleSignup(e: FormEvent<HTMLFormElement>) {
       throw new Error("Passwords do not match.");
     await signUp(data.get("first") as string, data.get("last") as string,
                  data.get("email") as string, data.get("password") as string);
+    return true;
   } catch (err) {
     document.getElementById("error")!.innerHTML = (err as Error).message;
+    return false;
   }
 }
 
 export default function SignupPage() {
+  const navigate = useNavigate();
   setTitle("Sign up");
   return (
     <article className={classes.authContainer}>
       <Paper elevation={5} className={classes.auth}>
         <h1>Sign up</h1>
         <div id="error" className={classes.error} />
-        <form className={classes.authForm} onSubmit={handleSignup}>
+        <form
+          className={classes.authForm}
+          onSubmit={async e => {
+            if (await handleSignup(e))
+              navigate("/login");
+          }}
+        >
           <TextField name="first" label="First name" autoComplete="given-name" />
           <TextField name="last" label="Last name" autoComplete="family-name" required />
           <TextField type="email" name="email" label="Email" autoComplete="email" required />
