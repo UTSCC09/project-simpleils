@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 import { getAuthors, getBooks, getPublishers } from "./api.ts";
 
-export function AuthorRecords() {
+function AuthorRecords() {
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(0);
   const [authors, setAuthors] = useState([] as Array<Author>);
@@ -47,21 +47,23 @@ export function AuthorRecords() {
           ))}
         </TableBody>
         <TableFooter>
-          <TablePagination
-            colSpan={3}
-            rowsPerPageOptions={[10]}
-            rowsPerPage={10}
-            count={rows}
-            page={page}
-            onPageChange={(e, newPage) => { setPage(newPage); }}
-          />
+          <TableRow>
+            <TablePagination
+              colSpan={3}
+              rowsPerPageOptions={[10]}
+              rowsPerPage={10}
+              count={rows}
+              page={page}
+              onPageChange={(e, newPage) => { setPage(newPage); }}
+            />
+          </TableRow>
         </TableFooter>
       </Table>
     </TableContainer>
   );
 }
 
-export function PublisherRecords() {
+function PublisherRecords() {
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(0);
   const [publishers, setPublishers] = useState([] as Array<Publisher>);
@@ -94,21 +96,23 @@ export function PublisherRecords() {
           ))}
         </TableBody>
         <TableFooter>
-          <TablePagination
-            colSpan={2}
-            rowsPerPageOptions={[10]}
-            rowsPerPage={10}
-            count={rows}
-            page={page}
-            onPageChange={(e, newPage) => { setPage(newPage); }}
-          />
+          <TableRow>
+            <TablePagination
+              colSpan={2}
+              rowsPerPageOptions={[10]}
+              rowsPerPage={10}
+              count={rows}
+              page={page}
+              onPageChange={(e, newPage) => { setPage(newPage); }}
+            />
+          </TableRow>
         </TableFooter>
       </Table>
     </TableContainer>
   );
 }
 
-export function BookRecords() {
+function BookRecords() {
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(0);
   const [books, setBooks] = useState([] as Array<Book>);
@@ -153,14 +157,16 @@ export function BookRecords() {
           ))}
         </TableBody>
         <TableFooter>
-          <TablePagination
-            colSpan={5}
-            rowsPerPageOptions={[10]}
-            rowsPerPage={10}
-            count={rows}
-            page={page}
-            onPageChange={(e, newPage) => { setPage(newPage); }}
-          />
+          <TableRow>
+            <TablePagination
+              colSpan={5}
+              rowsPerPageOptions={[10]}
+              rowsPerPage={10}
+              count={rows}
+              page={page}
+              onPageChange={(e, newPage) => { setPage(newPage); }}
+            />
+          </TableRow>
         </TableFooter>
       </Table>
     </TableContainer>

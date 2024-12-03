@@ -161,7 +161,10 @@ app.post("/login/google", async (req, res) => {
     return;
   }
 
-  const { sub, email, given_name: first, family_name: last } = payload;
+  let { sub, email, given_name: first, family_name: last } = payload;
+  email ??= "";
+  first ??= "";
+  last ??= "";
 
   // Try login
   try {
@@ -196,9 +199,9 @@ app.post("/login/google", async (req, res) => {
     // Start a session
     const user: User = {
       id: q.id,
-      type: q.type,
-      name: { first: q.first_name, last: q.last_name },
-      email: q.email
+      type: "user",
+      name: { first, last },
+      email
     };
     req.session.user = user;
     res.json(user);

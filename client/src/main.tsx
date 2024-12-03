@@ -5,6 +5,7 @@ import { StrictMode } from "react";
 import "./index.css";
 
 import App from "./App.tsx";
+import Catalogue from "./Catalogue.tsx";
 import CreditsPage from "./CreditsPage.tsx";
 import Dashboard from "./Dashboard.tsx";
 import ErrorPage from "./ErrorPage.tsx";
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <HomePage /> },
+      { path: "browse", element: <Catalogue /> },
       { path: "credits", element: <CreditsPage /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "login", element: <LoginPage /> },

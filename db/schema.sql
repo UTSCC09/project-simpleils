@@ -16,7 +16,7 @@ CREATE TABLE authors (
     id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     first_name text NOT NULL,
     last_name text NOT NULL,
-    bio text
+    bio text NOT NULL
 );
 
 CREATE TABLE publishers (
@@ -27,11 +27,11 @@ CREATE TABLE publishers (
 CREATE TABLE books (
     id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     title text NOT NULL,
-    author bigint REFERENCES authors,
-    publisher bigint REFERENCES publishers,
-    year smallint,
-    pages smallint,
-    summary text
+    author bigint NOT NULL REFERENCES authors,
+    publisher bigint NOT NULL REFERENCES publishers,
+    year smallint NOT NULL,
+    pages smallint NOT NULL,
+    summary text NOT NULL
 );
 
 INSERT INTO users VALUES (
