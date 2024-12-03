@@ -239,6 +239,66 @@ app.get("/users", requirePerms("staff"), async (req, res) => {
     res.status(500).json({ error: "A problem occurred." });
   }
 });
+app.get("/authors", async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip as string) || 0;
+    if (skip < 0) {
+      res.status(400).json({ error: "skip should not be negative." });
+      return;
+    }
+
+    const q1 = await db.one("SELECT COUNT(*) FROM authors");
+    const q2 = await db.manyOrNone(
+      `SELECT id, first_name, last_name FROM authors
+           ORDER BY last_name OFFSET $1 LIMIT 10`,
+      skip
+    );
+    res.json({ rows: parseInt(q1.count), data: q2 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.get("/publishers", async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip as string) || 0;
+    if (skip < 0) {
+      res.status(400).json({ error: "skip should not be negative." });
+      return;
+    }
+
+    const q1 = await db.one("SELECT COUNT(*) FROM publishers");
+    const q2 = await db.manyOrNone("SELECT * FROM publishers ORDER BY name OFFSET $1 LIMIT 10",
+                                   skip);
+    res.json({ rows: parseInt(q1.count), data: q2 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.get("/books", async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip as string) || 0;
+    if (skip < 0) {
+      res.status(400).json({ error: "skip should not be negative." });
+      return;
+    }
+
+    const q1 = await db.one("SELECT COUNT(*) FROM books");
+    const q2 = await db.manyOrNone(
+      `SELECT books.id, title, CONCAT(last_name, ', ', first_name) AS author,
+           name AS publisher, year FROM books
+           JOIN authors ON author = authors.id
+           JOIN publishers ON publisher = publishers.id
+           ORDER BY title OFFSET $1 LIMIT 10`,
+      skip
+    );
+    res.json({ rows: parseInt(q1.count), data: q2 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
 app.patch("/users/:id", requirePerms("admin"), async (req, res) => {
   if (!["user", "staff", "admin"].includes(req.body.type)) {
     res.status(400).json({ error: "Invalid account type specified." });

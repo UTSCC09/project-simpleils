@@ -2,7 +2,7 @@ import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
 import { setTitle } from "./helpers.ts";
 
-export default function CreditsPage() {
+export default function ErrorPage() {
   const error = useRouteError();
   if (isRouteErrorResponse(error)) {
     setTitle(`Error ${error.status}`);

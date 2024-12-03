@@ -29,7 +29,7 @@ function UserManagement() {
     <>
       <h2>Manage users</h2>
       <TableContainer component={Paper}>
-        <Table stickyHeader>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
