@@ -131,7 +131,10 @@ function PageHeader() {
     <header className={`page-head ${menuOpen ? "menu-open" : ""}`}>
       <Link href="/" className="site-title">{config.name}</Link>
       <nav>
+        <Link href="/browse">Catalogue</Link>
         {user.loggedIn && <Link href="/dashboard">Dashboard</Link>}
+        {(user.type === "staff" || user.type === "admin")
+        && <Link href="/records">Records</Link>}
       </nav>
       <ThemeButton className="header-theme-button" />
       <MenuButton
@@ -145,8 +148,8 @@ function PageHeader() {
             <Button
               variant="contained"
               onClick={async () => {
-                await logOut();
                 setUser({ loggedIn: false });
+                await logOut();
                 navigate("/login");
               }}
             >

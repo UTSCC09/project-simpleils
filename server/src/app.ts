@@ -161,7 +161,11 @@ app.post("/login/google", async (req, res) => {
     return;
   }
 
-  const { sub, email, given_name: first, family_name: last } = payload;
+  const { sub } = payload;
+  let { email, given_name: first, family_name: last } = payload;
+  email ??= "";
+  first ??= "";
+  last ??= "";
 
   // Try login
   try {
@@ -196,9 +200,9 @@ app.post("/login/google", async (req, res) => {
     // Start a session
     const user: User = {
       id: q.id,
-      type: q.type,
-      name: { first: q.first_name, last: q.last_name },
-      email: q.email
+      type: "user",
+      name: { first, last },
+      email
     };
     req.session.user = user;
     res.json(user);
@@ -221,9 +225,100 @@ app.post("/logout", (req, res) => {
 // Data routes
 app.get("/users", requirePerms("staff"), async (req, res) => {
   try {
-    const q = await db.manyOrNone("SELECT id, type, first_name, last_name, email FROM users");
+    const skip = parseInt(req.query.skip as string) || 0;
+    if (skip < 0) {
+      res.status(400).json({ error: "skip should not be negative." });
+      return;
+    }
+
+    const q1 = await db.one("SELECT COUNT(*) FROM users");
+    const q2 = await db.manyOrNone(
+      `SELECT id, type, first_name, last_name, email FROM users
+           ORDER BY last_name OFFSET $1 LIMIT 10`,
+      skip
+    );
+    res.json({ rows: parseInt(q1.count), data: q2 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.get("/authors", async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip as string) || 0;
+    if (skip < 0) {
+      res.status(400).json({ error: "skip should not be negative." });
+      return;
+    }
+
+    const q1 = await db.one("SELECT COUNT(*) FROM authors");
+    const q2 = await db.manyOrNone(
+      `SELECT id, first_name, last_name FROM authors
+           ORDER BY last_name OFFSET $1 LIMIT 10`,
+      skip
+    );
+    res.json({ rows: parseInt(q1.count), data: q2 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.get("/publishers", async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip as string) || 0;
+    if (skip < 0) {
+      res.status(400).json({ error: "skip should not be negative." });
+      return;
+    }
+
+    const q1 = await db.one("SELECT COUNT(*) FROM publishers");
+    const q2 = await db.manyOrNone("SELECT * FROM publishers ORDER BY name OFFSET $1 LIMIT 10",
+                                   skip);
+    res.json({ rows: parseInt(q1.count), data: q2 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.get("/books", async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip as string) || 0;
+    if (skip < 0) {
+      res.status(400).json({ error: "skip should not be negative." });
+      return;
+    }
+
+    const q1 = await db.one("SELECT COUNT(*) FROM books");
+    const q2 = await db.manyOrNone(
+      `SELECT books.id, title, CONCAT(last_name, ', ', first_name) AS author,
+           name AS publisher, year FROM books
+           JOIN authors ON author = authors.id
+           JOIN publishers ON publisher = publishers.id
+           ORDER BY title OFFSET $1 LIMIT 10`,
+      skip
+    );
+    res.json({ rows: parseInt(q1.count), data: q2 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.get("/books/:id", async (req, res) => {
+  try {
+    const q = await db.one(
+      `SELECT books.id, title, first_name, last_name, name AS publisher,
+           year, pages, summary FROM books
+           JOIN authors ON author = authors.id
+           JOIN publishers ON publisher = publishers.id
+           WHERE books.id = $1`,
+      req.params.id
+    );
     res.json(q);
   } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "Book ID does not exist." });
+      return;
+    }
     console.error(e);
     res.status(500).json({ error: "A problem occurred." });
   }
@@ -244,6 +339,45 @@ app.patch("/users/:id", requirePerms("admin"), async (req, res) => {
   } catch (e) {
     if (e instanceof QueryResultError) {
       res.status(404).json({ error: "User ID does not exist." });
+      return;
+    }
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.delete("/authors/:id", requirePerms("staff"), async (req, res) => {
+  try {
+    await db.none("DELETE FROM authors WHERE id = $1", req.params.id);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "Author ID does not exist." });
+      return;
+    }
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.delete("/publishers/:id", requirePerms("staff"), async (req, res) => {
+  try {
+    await db.none("DELETE FROM publishers WHERE id = $1", req.params.id);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "Publisher ID does not exist." });
+      return;
+    }
+    console.error(e);
+    res.status(500).json({ error: "A problem occurred." });
+  }
+});
+app.delete("/books/:id", requirePerms("staff"), async (req, res) => {
+  try {
+    await db.none("DELETE FROM books WHERE id = $1", req.params.id);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e instanceof QueryResultError) {
+      res.status(404).json({ error: "Book ID does not exist." });
       return;
     }
     console.error(e);

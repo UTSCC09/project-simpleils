@@ -5,16 +5,25 @@ import { useContext, useEffect, useState } from "react";
 import { getUsers, changeUserType } from "./api.ts";
 import { UserContext } from "./App.tsx";
 import { setTitle } from "./helpers.ts";
-import { FormControl, MenuItem, Paper, Select, Table, TableBody, TableContainer,
-         TableCell, TableHead, TableRow } from "@mui/material";
+import { FormControl, MenuItem, Paper, Select, Table, TableBody, TableCell,
+         TableContainer, TableFooter, TableHead, TablePagination, TableRow } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
+function capitalize(str: string) {
+  return str[0].toUpperCase() + str.slice(1);
+}
 
 function UserManagement() {
   const { user } = useContext(UserContext);
+  const [page, setPage] = useState(0);
+  const [rows, setRows] = useState(0);
   const [users, setUsers] = useState([] as Array<User>);
   useEffect(() => {
-    getUsers().then(setUsers);
-  }, []);
+    getUsers(page * 10).then(({ rows: numRows, data }) => {
+      setRows(numRows);
+      setUsers(data);
+    });
+  }, [page]);
 
   return (
     <>
@@ -37,7 +46,7 @@ function UserManagement() {
                   {u.id}
                 </TableCell>
                 <TableCell>
-                  {u.id === user.id ? u.type : (
+                  {u.id === user.id ? capitalize(u.type) : (
                     <FormControl size="small">
                       <Select
                         defaultValue={u.type}
@@ -65,6 +74,18 @@ function UserManagement() {
               </TableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                colSpan={5}
+                rowsPerPageOptions={[10]}
+                rowsPerPage={10}
+                count={rows}
+                page={page}
+                onPageChange={(e, newPage) => { setPage(newPage); }}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
     </>
@@ -83,6 +104,7 @@ export default function Dashboard() {
   return (
     <article className="fixed-width">
       <h1>Dashboard</h1>
+      Welcome back, {[user.name?.first, user.name?.last].join(" ")}.
       {user.type === "admin" && <UserManagement />}
     </article>
   );

@@ -8,8 +8,29 @@ CREATE TABLE users (
 );
 
 CREATE TABLE google (
-    id bigint PRIMARY KEY REFERENCES users,
+    id bigint PRIMARY KEY REFERENCES users ON DELETE CASCADE,
     sub character(21) NOT NULL UNIQUE
+);
+
+CREATE TABLE authors (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    first_name text NOT NULL,
+    last_name text NOT NULL
+);
+
+CREATE TABLE publishers (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name text NOT NULL
+);
+
+CREATE TABLE books (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    title text NOT NULL,
+    author bigint NOT NULL REFERENCES authors ON DELETE CASCADE,
+    publisher bigint NOT NULL REFERENCES publishers ON DELETE CASCADE,
+    year smallint NOT NULL,
+    pages smallint NOT NULL,
+    summary text NOT NULL
 );
 
 INSERT INTO users VALUES (

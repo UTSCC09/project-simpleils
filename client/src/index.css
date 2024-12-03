@@ -32,5 +32,6 @@ body {
 }
 
 .fixed-width {
+  width: 100%;
   overflow: hidden;
 }
